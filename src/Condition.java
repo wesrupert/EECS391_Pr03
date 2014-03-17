@@ -16,27 +16,32 @@ public class Condition {
 	}
 
 	@Override
-	public boolean equals(Condition cond) {
+	public boolean equals(Object o) {
+        Condition cond = (Condition)o;
 		if (!this.name.equals(cond.name)) {
 			return false;
 		}
-		if (this.variables.length() != cond.variables.length()) {
+		if (this.variables.length != cond.variables.length) {
 			return false;
 		}
 		for (String var : this.variables) {
-			if (!cond.variables.contains(var)) {
-				return false;
+            boolean isIn = false;
+            for (String other : cond.variables) {
+                isIn |= var.equals(other);
 			}
+            if (!isIn) {
+                return false;
+            }
 		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		String temp = name + "(");
-		for (int i = 0; i < variables.length(); i++) {
+		String temp = name + "(";
+		for (int i = 0; i < variables.length; i++) {
 			temp = temp + variables[i];
-			if (i < variables.length() - 1) {
+			if (i < variables.length - 1) {
 				temp = temp + ",";
 			}
 		}

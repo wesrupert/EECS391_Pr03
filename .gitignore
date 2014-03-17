@@ -3,6 +3,7 @@
 *.swp
 *.class
 *.pdf
+*.sublime-*
 bin/
 SEPIA_docs
 src/saves
