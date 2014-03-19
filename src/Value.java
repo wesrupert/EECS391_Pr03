@@ -22,17 +22,19 @@ class Value {
     }
 
     public int set(int newvalue) {
-        switch (type) {
-            case ADD:
-                value += newvalue;
-                return value;
-            case REMOVE:
-                value -= newvalue;
-                return value;
-            case EQUALS:
-                value = newvalue;
-                return value;
-        }
+    	switch (type) {
+    	case ADD:
+    		value += newvalue;
+    		return value;
+    	case REMOVE:
+    		value -= newvalue;
+    		return value;
+    	case EQUALS:
+    		value = newvalue;
+    		return value;
+    	default:
+    		return 0;
+    	}
     }
 
     public Type getType() {
@@ -43,7 +45,7 @@ class Value {
         type = newtype;
     }
 
-    public boolean equals(integer i) {
+    public boolean equals(int i) {
         return this.value == i;
     }
 

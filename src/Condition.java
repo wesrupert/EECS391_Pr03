@@ -1,12 +1,12 @@
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 public class Condition {
     private String name;
     private Map<String, Value> variables;
 
-    public Condition(String name, Type type, List<String> variables) {
+    public Condition(String name, List<String> variables) {
         this.name = name;
         this.variables = new HashMap<>();
         for (String var : variables) {
@@ -19,7 +19,7 @@ public class Condition {
         this.variables = new HashMap<>();
         for (String var : variables.keySet()) {
             Value value = new Value(original.variables.get(var));
-            value.set(variables.get(var));
+            value.set(variables.get(var).get());
             this.variables.put(var, value);
         }
     }
@@ -63,10 +63,8 @@ public class Condition {
     }
 
     private boolean compareGreaterThan(Condition c, boolean strictly) {
-        int compareTo = 0;
-        if (strictly) {
-            compareTo = 1;
-        }
+        int compareTo = strictly ? 1 : 0;
+
         for (String var : variables.keySet()) {
             if (!c.variables.containsKey(var)) {
                 return false;
