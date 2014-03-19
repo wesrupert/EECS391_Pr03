@@ -32,6 +32,8 @@ class Value {
             case EQUALS:
                 value = newvalue;
                 return value;
+            default:
+                return 0;
         }
     }
 
@@ -43,7 +45,7 @@ class Value {
         type = newtype;
     }
 
-    public boolean equals(integer i) {
+    public boolean equals(int i) {
         return this.value == i;
     }
 
@@ -54,5 +56,18 @@ class Value {
 
     public int compareTo(Value v) {
         return this.value - v.value;
+    }
+
+    public boolean compareToLoosely(int i) {
+        switch (type) {
+            case ADD:
+                return value <= i;
+            case REMOVE:
+                return value >= i;
+            case EQUALS:
+                return value == i;
+            default:
+                return false;
+        }
     }
 }

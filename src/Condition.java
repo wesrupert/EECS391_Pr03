@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -6,7 +7,7 @@ public class Condition {
     private String name;
     private Map<String, Value> variables;
 
-    public Condition(String name, Type type, List<String> variables) {
+    public Condition(String name, List<String> variables) {
         this.name = name;
         this.variables = new HashMap<>();
         for (String var : variables) {
@@ -19,7 +20,7 @@ public class Condition {
         this.variables = new HashMap<>();
         for (String var : variables.keySet()) {
             Value value = new Value(original.variables.get(var));
-            value.set(variables.get(var));
+            value.set(variables.get(var).get());
             this.variables.put(var, value);
         }
     }
@@ -54,52 +55,33 @@ public class Condition {
         return true;
     }
 
-    public boolean greaterThan(Condition c) {
-        return compareGreaterThan(c, false);
-    }
-
-    public boolean strictlyGreaterThan(Condition c) {
-        return compareGreaterThan(c, true);
-    }
-
-    private boolean compareGreaterThan(Condition c, boolean strictly) {
-        int compareTo = 0;
-        if (strictly) {
-            compareTo = 1;
+    public Value getValue(String key) {
+        if (!variables.containsKey(key)) {
+            return null;
         }
-        for (String var : variables.keySet()) {
-            if (!c.variables.containsKey(var)) {
-                return false;
-            }
-            Value i1 = variables.get(var);
-            Value i2 = c.variables.get(var);
-            if (i1.compareTo(i2) < compareTo) {
+        return variables.get(key);
+    }
+
+    public boolean usesOnly(Set<String> variables) {
+        for (String var : variables) {
+            if (!this.variables.containsKey(var)) {
                 return false;
             }
         }
         return true;
     }
 
-    public boolean lessThan(Condition c) {
-        return compareLessThan(c, false);
-    }
-
-    public boolean strictlyLessThan(Condition c) {
-        return compareLessThan(c, true);
-    }
-
-    private boolean compareLessThan(Condition c, boolean strictly) {
-        int compareTo = 0;
-        if (strictly) {
-            compareTo = -1;
+    public boolean compareToLoosely(Condition c) {
+        if (!name.equals(c.name)) {
+            return false;
         }
         for (String var : variables.keySet()) {
             if (!c.variables.containsKey(var)) {
                 return false;
             }
-            Value i1 = variables.get(var);
-            Value i2 = c.variables.get(var);
-            if (i1.compareTo(i2) > compareTo) {
+            Value value = variables.get(var);
+            Value other = c.variables.get(var);
+            if (!value.compareToLoosely(other.get())) {
                 return false;
             }
         }
