@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class State {
     private State parent;
-    private Action fromParent;
+    private PlanAction fromParent;
     private Map<String, Value> valuesFromParent;
-    private List<Action> actions;
+    private List<PlanAction> actions;
     private List<Condition> state;
 
-    public State(List<Action> actions, List<Condition> initialState) {
+    public State(List<PlanAction> actions, List<Condition> initialState) {
         this.parent = null;
         this.fromParent = null;
         this.valuesFromParent = null;
@@ -17,7 +17,7 @@ public class State {
         this.state = initialState;
     }
 
-    public State(State parent, Action action, Map<String, Value> values, List<Condition> state) {
+    public State(State parent, PlanAction action, Map<String, Value> values, List<Condition> state) {
         this.parent = parent;
         this.fromParent = action;
         this.valuesFromParent = values;
@@ -29,7 +29,7 @@ public class State {
         return this.parent;
     }
 
-    public Action getFromParent() {
+    public PlanAction getFromParent() {
         return this.fromParent;
     }
 
@@ -41,13 +41,13 @@ public class State {
         return this.state;
     }
     
-    public List<Action> generatePossibleActions() {
+    public List<PlanAction> generatePossibleActions() {
         List<String> variables = new ArrayList<>();
         for (Condition condition : state) {
             variables.addAll(condition.getVariables().keySet());
         }
         
-        for (Action action : actions) {
+        for (PlanAction action : actions) {
             //TODO plug variables into actions, see if they are valid
             
         }

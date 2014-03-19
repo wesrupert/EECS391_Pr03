@@ -1,16 +1,16 @@
-import java.util.List;
-import java.util.Set;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-public class Action {
+public class PlanAction {
     private String name;
     private Set<String> variables;
     private List<Condition> preconditions;
     private List<Condition> add;
     private List<Condition> delete;
 
-    public Action(String name,
+    public PlanAction(String name,
             Set<String> variables,
             List<Condition> preconditions,
             List<Condition> add,
