@@ -1,5 +1,4 @@
 import java.util.List;
-import java.util.ArrayList;
 
 public class State {
 	private State parent;
@@ -9,16 +8,16 @@ public class State {
 
 	public State(List<Action> actions, List<Condition> initialState) {
 		this.parent = null;
-		this.action = null;
+        this.fromParent = null;
 		this.actions = actions;
 		this.state = initialState;
 	}
 
-	public State(State parent, Action action, List<Object> values) {
+	public State(State parent, Action action, List<Condition> state) {
 		this.parent = parent;
+        this.fromParent = action;
 		this.actions = parent.actions;
-		this.action = action;
-		this.state = action.use(parent.getState(), values);
+		this.state = state;
 	}
 
 	public State getParent() {

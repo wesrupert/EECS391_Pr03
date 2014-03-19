@@ -22,9 +22,9 @@ public class Action {
     	this.delete = delete;
     }
 
-    public List<Condition> use(State state, Map<String, Object> values) {
+    public State use(State state, Map<String, Object> values) {
         if (!isApplicableTo(state)) {
-            return state.getState();
+            return null;
         }
     	List<Condition> newstate = new ArrayList<>(state.getState());
         for (Condition c : add) {
@@ -35,21 +35,14 @@ public class Action {
         for (Condition c : delete) {
             newstate.remove(c);
         }
-        return newstate;
+        return new State(state, this, newstate);
     }
 
     public boolean isApplicableTo(State state) {
     	for (Condition c : preconditions) {
-    		boolean isIn = false;
-	    	for (Condition o : state.getState()) {
-	    		isIn |= c.equals(o);
-	    		if (isIn) {
-	    			break;
-	    		}
-	    	}
-	    	if (!isIn) {
-	    		return false;
-	    	}
+            if (!state.getState().contains(c)) {
+                return false;
+            }
     	}
     	return true;
     }
