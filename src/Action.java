@@ -29,7 +29,6 @@ public class Action {
     	List<Condition> newstate = new ArrayList<>(state.getState());
         for (Condition c : add) {
             if (!newstate.contains(c)) {
-                if 
                 newstate.add(c);
             }
         }
