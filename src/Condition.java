@@ -1,32 +1,30 @@
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class Condition {
 	private String name;
-	private List<String> variables;
-	private List<Object> values;
+    private Map<String, Integer> variables;
 
 	public Condition(String name, List<String> variables) {
 		this.name = name;
-		this.variables = variables;
-		this.values = null;
+        this.variables = new HashMap<>();
+        for (String var : variables) {
+            this.variables.put(var, null);
+        }
 	}
 
-	public Condition(Condition original, List<Object> values) {
+	public Condition(Condition original, Map<String, Integer> variables) {
 		this.name = original.name;
-		this.values = values;
-		this.variables = original.variables;
+        this.variables = new HashMap<>(variables);
 	}
 
 	public String getName() {
 		return this.name;
 	}
 
-	public List<String> getVariables() {
+	public Map<String, Integer> getVariables() {
 		return this.variables;
-	}
-
-	public List<Object> getValues() {
-		return this.values;
 	}
 
 	@Override
@@ -38,24 +36,70 @@ public class Condition {
 		if (this.variables.size() != cond.variables.size()) {
 			return false;
 		}
-		for (String var : this.variables) {
-            if (!cond.variables.contains(var)) {
+		for (String var : this.variables.keySet()) {
+            if (!cond.variables.containsKey(var)) {
+                return false;
+            }
+            Integer i1 = this.variables.get(var);
+            Integer i2 = cond.variables.get(var);
+            if (!i1.equals(i2)) {
                 return false;
             }
 		}
-		if (this.values == null && cond.getValues() == null) {
-			return true;
-        } else if (this.values == null || cond.values == null) {
-            return false;
-		} else {
-			for (Object var : this.values) {
-                if (!cond.values.contains(var)) {
-                    return false;
-                }
-			}
-		}
 		return true;
 	}
+
+    public boolean greaterThan(Condition c) {
+        return compareGreaterThan(c, false);
+    }
+
+    public boolean strictlyGreaterThan(Condition c) {
+        return compareGreaterThan(c, true);
+    }
+
+    private boolean compareGreaterThan(Condition c, boolean strictly) {
+        int compareTo = 0;
+        if (strictly) {
+            compareTo = 1;
+        }
+		for (String var : this.variables.keySet()) {
+            if (!c.variables.containsKey(var)) {
+                return false;
+            }
+            Integer i1 = this.variables.get(var);
+            Integer i2 = c.variables.get(var);
+            if (i1.compareTo(i2) < compareTo) {
+                return false;
+            }
+		}
+        return true;
+    }
+
+    public boolean lessThan(Condition c) {
+        return compareLessThan(c, false);
+    }
+
+    public boolean strictlyLessThan(Condition c) {
+        return compareLessThan(c, true);
+    }
+
+    private boolean compareLessThan(Condition c, boolean strictly) {
+        int compareTo = 0;
+        if (strictly) {
+            compareTo = -1;
+        }
+		for (String var : this.variables.keySet()) {
+            if (!c.variables.containsKey(var)) {
+                return false;
+            }
+            Integer i1 = this.variables.get(var);
+            Integer i2 = c.variables.get(var);
+            if (i1.compareTo(i2) > compareTo) {
+                return false;
+            }
+		}
+        return true;
+    }
 
 	@Override
 	public String toString() {
