@@ -1,12 +1,15 @@
-import java.util.Dictionary;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+
+import edu.cwru.sepia.action.ActionType;
 
 public class Action {
 	private String name;
 	private List<Condition> preconditions;
 	private List<Condition> add;
 	private List<Condition> delete;
+	private ActionType sepiaAction;
 
     public Action(String name,
             String[] values,
@@ -19,7 +22,7 @@ public class Action {
     	this.delete = delete;
     }
 
-    public List<Condition> use(State state, Dictionary<String, Object> values) {
+    public List<Condition> use(State state, Map<String, Object> values) {
     	List<Condition> newstate = new ArrayList<>(state.getState());
     	for (Condition c : add) {
     		Condition newcond = new Condition(c, )
