@@ -3,11 +3,11 @@ import java.util.List;
 
 
 public class Planner {
-	private List<Action> availableActions;
+	private List<PlanAction> availableActions;
 	private State startState;
 	private State goalState;
 	
-	public Planner(List<Action> availableActions, State startState, State goalState) {
+	public Planner(List<PlanAction> availableActions, State startState, State goalState) {
 		this.availableActions = new ArrayList<>();
 		this.availableActions.addAll(availableActions);
 		
@@ -17,9 +17,10 @@ public class Planner {
 	}
 	
 	// TODO
-	public List<Action> createPlan() {
+	public List<PlanAction> createPlan() {
 		for (Condition goalCondition : goalState.getState()) {
 			//TODO solve goal conditions one at a time
+			
 		}
 		
 		return null;

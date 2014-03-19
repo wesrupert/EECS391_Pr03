@@ -1,17 +1,26 @@
-import java.util.List;
-import java.util.Set;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Condition {
     private String name;
     private Map<String, Value> variables;
 
     public Condition(String name, List<String> variables) {
+    	this(name, variables, null);
+    }
+    
+    public Condition(String name, List<String> variables, List<String> sums) {
         this.name = name;
         this.variables = new HashMap<>();
         for (String var : variables) {
             this.variables.put(var, new Value(0));
+        }
+        if (sums != null) {
+	        for (String var : sums) {
+	        	this.variables.put(var,  new Value(0, Value.Type.ADD));
+	        }
         }
     }
 
