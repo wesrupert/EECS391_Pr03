@@ -50,24 +50,10 @@ class Value {
     }
 
     public boolean equals(Value v) {
-        return this.value == v.value &&
-            this.type == v.type;
+        return this.value == v.value;
     }
 
     public int compareTo(Value v) {
         return this.value - v.value;
-    }
-
-    public boolean compareToLoosely(int i) {
-        switch (type) {
-            case ADD:
-                return value <= i;
-            case REMOVE:
-                return value >= i;
-            case EQUALS:
-                return value == i;
-            default:
-                return false;
-        }
     }
 }
