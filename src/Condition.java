@@ -80,22 +80,6 @@ public class Condition {
         return true;
     }
 
-    public boolean compareToLoosely(Condition c) {
-        if (!name.equals(c.name)) {
-            return false;
-        }
-        for (String var : variables.keySet()) {
-            if (!c.variables.containsKey(var)) {
-                return false;
-            }
-            Value value = variables.get(var);
-            Value other = c.variables.get(var);
-            if (!value.compareToLoosely(other.get())) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     @Override
     public String toString() {

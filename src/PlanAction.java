@@ -1,7 +1,7 @@
-import java.util.List;
-import java.util.Set;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import edu.cwru.sepia.action.ActionType;
 
@@ -32,7 +32,7 @@ public class PlanAction {
     }
 
     public State use(State state, Map<String, Value> values) {
-        if (!isApplicableTo(state) || !onlyDefinedVarsIn(values.keySet())) {
+        if (!isApplicableTo(state, values) || !onlyDefinedVarsIn(values.keySet())) {
             return null;
         }
         List<Condition> newstate = new ArrayList<>(state.getState());
