@@ -44,7 +44,7 @@ public class Action {
         for (Condition c : delete) {
             newstate.remove(c);
         }
-        return new State(state, this, newstate);
+        return new State(state, this, values, newstate);
     }
 
     public boolean isApplicableTo(State state) {
