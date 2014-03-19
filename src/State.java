@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class State {
@@ -30,5 +31,19 @@ public class State {
 
 	public List<Condition> getState() {
 		return this.state;
+	}
+	
+	public List<Action> generatePossibleActions() {
+		List<String> variables = new ArrayList<>();
+		for (Condition condition : state) {
+			variables.addAll(condition.getVariables().keySet());
+		}
+		
+		for (Action action : actions) {
+			//TODO plug variables into actions, see if they are valid
+			
+		}
+		
+		return null;
 	}
 }
