@@ -4,22 +4,23 @@ import java.util.List;
 
 public class Planner {
 	private List<Action> availableActions;
-	private List<Condition> startState;
-	private List<Condition> goalState;
+	private State startState;
+	private State goalState;
 	
-	public Planner(List<Action> availableActions, List<Condition> startState, List<Condition> goalState) {
+	public Planner(List<Action> availableActions, State startState, State goalState) {
 		this.availableActions = new ArrayList<>();
 		this.availableActions.addAll(availableActions);
 		
-		this.startState = new ArrayList<>();
-		this.startState.addAll(startState);
+		this.startState = startState;
 		
-		this.goalState = new ArrayList<>();
-		this.goalState.addAll(goalState);
+		this.goalState = goalState;
 	}
 	
 	// TODO
 	public List<Action> createPlan() {
+		for (Condition goalCondition : goalState.getState()) {
+			//TODO solve goal conditions one at a time
+		}
 		
 		return null;
 	}
