@@ -47,9 +47,13 @@ public class Action {
         return new State(state, this, values, newstate);
     }
 
-    public boolean isApplicableTo(State state) {
+    public boolean isApplicableTo(State state, Map<String, Value> values) {
+        if (!onlyDefinedVarsIn(values.keySet())) {
+            return false;
+        }
         for (Condition c : preconditions) {
-            if (!state.getState().contains(c)) {
+            Condition cond = new Condition(c, values);
+            if (!state.getState().contains(cond)) {
                 return false;
             }
         }

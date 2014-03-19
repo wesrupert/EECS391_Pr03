@@ -18,7 +18,7 @@ public class Condition {
     public Condition(Condition original, Map<String, Value> variables) {
         this.name = original.name;
         this.variables = new HashMap<>();
-        for (String var : variables.keySet()) {
+        for (String var : original.variables.keySet()) {
             Value value = new Value(original.variables.get(var));
             value.set(variables.get(var).get());
             this.variables.put(var, value);
