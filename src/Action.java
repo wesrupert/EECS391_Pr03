@@ -22,13 +22,14 @@ public class Action {
     	this.delete = delete;
     }
 
-    public State use(State state, Map<String, Object> values) {
+    public State use(State state, Map<String, Value> values) {
         if (!isApplicableTo(state)) {
             return null;
         }
     	List<Condition> newstate = new ArrayList<>(state.getState());
         for (Condition c : add) {
             if (!newstate.contains(c)) {
+                if 
                 newstate.add(c);
             }
         }
