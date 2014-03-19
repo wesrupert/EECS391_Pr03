@@ -4,6 +4,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class Condition {
+    private static List<String> holdingNames = new ArrayList<>();
+    holdingNames.add("id");
+    holdingNames.add("type");
+    public static final HOLDING = new Condition("Holding", holdingNames);
+
     private String name;
     private Map<String, Value> variables;
 
