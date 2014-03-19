@@ -23,10 +23,19 @@ public class Action {
     }
 
     public List<Condition> use(State state, Map<String, Object> values) {
+        if (!isApplicableTo(state)) {
+            return state.getState();
+        }
     	List<Condition> newstate = new ArrayList<>(state.getState());
-    	for (Condition c : add) {
-    		Condition newcond = new Condition(c, )
-    	}
+        for (Condition c : add) {
+            if (!newstate.contains(c)) {
+                newstate.add(c);
+            }
+        }
+        for (Condition c : delete) {
+            newstate.remove(c);
+        }
+        return newstate;
     }
 
     public boolean isApplicableTo(State state) {
