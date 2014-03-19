@@ -18,21 +18,21 @@ class PossibleConditions {
 
     public List<Condition> getHolding() {
         if (holding == null) {
-            holding = condList("Holding", ids, types);
+            holding = condList("Holding", "id", "type", ids, types);
         }
         return holding;
     }
 
     public List<Condition> getAt() {
         if (at == null) {
-            at = condList("At", ids, locations);
+            at = condList("At", "id", "pos", ids, locations);
         }
         return at;
     }
 
     public List<Condition> getContains() {
         if (contains == null) {
-            contains = condList("Contains", locations, types);
+            contains = condList("Contains", "pos", "type", locations, types);
         }
         return contains;
     }
@@ -52,15 +52,18 @@ class PossibleConditions {
         return states;
     }
 
-
-    private List<Condition> condList(String name, int[] vars1, int[] vars2) {
+    private List<Condition> condList(String name, String var1name, String var2name, int[] vars1, int[] vars2) {
         List<Condition> list = new ArrayList<>();
+        List<String> names = new ArrayList<>();
+        names.add(var1name);
+        names.add(var2name);
+        Condition template = new Condition(name, names);
         for (int var1 : vars1) {
             for (int var2 : vars2) {
-                List<String> vars = new ArrayList<>();
-                vars.add(String.valueOf(var1));
-                vars.add(String.valueOf(var2));
-                list.add(new Condition("Holding", vars));
+                Map<String, Value> vars = new HashMap<>();
+                vars.put(var1name, new Value(var1));
+                vars.put(var2name, new Value(var2));
+                list.add(new Condition(template, vars));
             }
         }
         return list;

@@ -3,15 +3,12 @@ import java.util.Set;
 import java.util.ArrayList;
 import java.util.Map;
 
-import edu.cwru.sepia.action.ActionType;
-
 public class Action {
     private String name;
     private Set<String> variables;
     private List<Condition> preconditions;
     private List<Condition> add;
     private List<Condition> delete;
-    private ActionType sepiaAction;
 
     public Action(String name,
             Set<String> variables,
@@ -32,7 +29,7 @@ public class Action {
     }
 
     public State use(State state, Map<String, Value> values) {
-        if (!isApplicableTo(state) || !onlyDefinedVarsIn(values.keySet())) {
+        if (!isApplicableTo(state, values) || !onlyDefinedVarsIn(values.keySet())) {
             return null;
         }
         List<Condition> newstate = new ArrayList<>(state.getState());
