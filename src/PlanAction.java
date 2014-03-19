@@ -5,7 +5,7 @@ import java.util.Map;
 
 import edu.cwru.sepia.action.ActionType;
 
-public class Action {
+public class PlanAction {
     private String name;
     private Set<String> variables;
     private List<Condition> preconditions;
@@ -13,7 +13,7 @@ public class Action {
     private List<Condition> delete;
     private ActionType sepiaAction;
 
-    public Action(String name,
+    public PlanAction(String name,
             Set<String> variables,
             List<Condition> preconditions,
             List<Condition> add,
