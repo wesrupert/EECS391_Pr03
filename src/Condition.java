@@ -1,6 +1,4 @@
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class Condition {
@@ -27,6 +25,21 @@ public class Condition {
         }
     }
 
+    public Condition(Condition other, List<Value> values) {
+        this.name = other.name;
+        this.variables = new ArrayList<>(other.variables);
+        for (int i = 0; i < other.variables.size(); i++) {
+            Value value = new Value(other.variables.get(i));
+            for (Value val : values) {
+                if (value.getName.equals(val.getName())) {
+                    value.updateValue(val.getValue());
+                    break;
+                }
+            }
+            this.variables.add(value);
+        }
+    }
+
     public String getName() {
         return name;
     }
@@ -36,7 +49,11 @@ public class Condition {
     }
 
     @Override
-    public boolean equals(Condition cond) {
+    public boolean equals(Object o) {
+        return this.toString().equals(o.toString());
+    }
+
+    public boolean oldequals(Condition cond) {
         if (!name.equals(cond.name)) {
             return false;
         } else if (variables.size() != cond.variables.size()) {

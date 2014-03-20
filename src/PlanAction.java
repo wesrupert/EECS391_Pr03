@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class PlanAction {
@@ -10,47 +9,43 @@ public class PlanAction {
     private List<Condition> add;
     private List<Condition> delete;
 
-    public PlanAction(String name,
-            Set<String> variables,
-            List<Condition> preconditions,
-            List<Condition> add,
-            List<Condition> delete) {
+    public PlanAction(String name, Set<String> variables, List<Condition> preconditions, List<Condition> add, List<Condition> delete) {
         this.name = name;
         this.variables = variables;
-        // if (this.onlyDefinedVarsIn(preconditions)) {
-            this.preconditions = preconditions;
-        // }
-        // if (this.onlyDefinedVarsIn(add)) {
-            this.add = add;
-        // }
-        // if (this.onlyDefinedVarsIn(delete)) {
-            this.delete = delete;
-        // }
+        this.preconditions = preconditions;
+        this.add = add;
+        this.delete = delete;
     }
 
-    public State use(State state, Map<String, Value> values) {
-        if (!isApplicableTo(state, values) || !onlyDefinedVarsIn(values.keySet())) {
+    public State use(State state, List<Value> values) {
+        if (!isApplicableTo(state, values)) {
             return null;
         }
-        List<Condition> newstate = new ArrayList<>(state.getState());
-        for (Condition c : delete) {
-            newstate.remove(c);
-        }
+        List<Condition> newconditions = new ArrayList<>(state.getState());
+
+        // Add the new state conditions.
         for (Condition c : add) {
-            if (!newstate.contains(c)) {
-                newstate.add(new Condition(c, values));
+            Condition applied = new Condition(c, values);
+            if (!newstate.contains(applied)) {
+                newstate.add(applied);
             }
         }
+
+        // Remove the old state conditions.
+        for (Condition c : delete) {
+            Condition applied = new Condition(c, values);
+            if (newconditions.contains(applied)) {
+                newconditions.remove(applied);
+            }
+        }
+
         return new State(state, this, values, newstate);
     }
 
-    public boolean isApplicableTo(State state, Map<String, Value> values) {
-        if (!onlyDefinedVarsIn(values.keySet())) {
-            return false;
-        }
+    public boolean isApplicableTo(State state, List<Value> values) {
         for (Condition c : preconditions) {
-            Condition cond = new Condition(c, values);
-            if (!state.getState().contains(cond)) {
+            Condition applied = new Condition(c, values);
+            if (!state.getState().contains(applied)) {
                 return false;
             }
         }
@@ -75,24 +70,5 @@ public class PlanAction {
 
     public List<Condition> getDelete() {
         return this.delete;
-    }
-
-    private boolean onlyDefinedVarsIn(Iterable<Condition> conditions) {
-        for (Condition c : conditions) {
-            if (!c.usesOnly(this.variables)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    //XXX What use is this exactly?
-    private boolean onlyDefinedVarsIn(Set<String> variables) {
-        for (String var : variables) {
-            if (!variables.contains(var)) {
-                return false;
-            }
-        }
-        return true;
     }
 }

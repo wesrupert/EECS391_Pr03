@@ -1,5 +1,4 @@
 import java.util.List;
-import java.util.Map;
 
 public class State {
     public static int GoldValue;
@@ -7,7 +6,7 @@ public class State {
 
     private State parent;
     private PlanAction fromParent;
-    private Map<String, Value> valuesFromParent;
+    private List<Value> valuesFromParent;
     private List<Condition> state;
 
     public State(List<Condition> initialState) {
@@ -17,7 +16,7 @@ public class State {
         this.state = initialState;
     }
 
-    public State(State parent, PlanAction action, Map<String, Value> values, List<Condition> state) {
+    public State(State parent, PlanAction action, List<Value> values, List<Condition> state) {
         this.parent = parent;
         this.fromParent = action;
         this.valuesFromParent = values;
@@ -32,7 +31,7 @@ public class State {
         return this.fromParent;
     }
 
-    public Map<String, Value> getValuesFromParent() {
+    public List<Value> getValuesFromParent() {
         return valuesFromParent;
     }
 
