@@ -42,9 +42,21 @@ public class Condition {
         this.variables = new HashMap<>();
         for (String var : original.variables.keySet()) {
             Value value = new Value(original.variables.get(var));
-            value.set(variables.get(var).get());
+            if (value == null) {
+                value = new Value(variables.get(var));
+            } else if (value.type != Value.Type.EQUALS) {
+                value.set(variables.get(var).get());
+            }
             this.variables.put(var, value);
         }
+    }
+
+    public boolean setConstant(String name, Value value) {
+        if (variables.containsKey(name) && variables.get(name) != null) {
+            return false;
+        }
+        variables.put(name, value);
+        return true;
     }
 
     public String getName() {
