@@ -3,6 +3,9 @@ import java.util.Map;
 import java.util.ArrayList;
 
 public class State {
+    public static int GoldValue;
+    public static int WoodValue;
+
     private State parent;
     private PlanAction fromParent;
     private Map<String, Value> valuesFromParent;
@@ -53,5 +56,23 @@ public class State {
         }
         
         return null;
+    }
+
+    public int getHeuristicWeight(bool isGold) {
+        int weight = isGold ? GoldValue : WoodValue;
+        String type;
+
+        // Find how much gold we have.
+        Value has = null;
+        for (Condition c : state) {
+            if (c.getName().equals("Has") && {
+                has = c.getValue(type);
+            }
+        }
+        if (has == null) {
+            return -1;
+        }
+
+        return -1;
     }
 }
