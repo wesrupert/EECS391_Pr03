@@ -1,5 +1,5 @@
 class Value {
-    public static enum Type { ADD, REMOVE, EQUALS };
+    public static enum Type { ADD, REMOVE, EQUALS, CONSTANT };
     private String name;
     private int value;
     private Type type;
@@ -58,7 +58,7 @@ class Value {
                 this.value = value;
                 return value;
             default:
-                return 0;
+                return -1;
         }
     }
 
@@ -83,7 +83,10 @@ class Value {
     }
 
     public String toString() {
-        String modifier = type == Type.ADD ? "+" : type == Type.REMOVE ? "-" : "";
+        String modifier = (type == Type.ADD)      ? "+" :
+                          (type == Type.REMOVE)   ? "-" :
+                          (type == Type.CONSTANT) ? "$" :
+                                                    "";
         if (name == null) {
             return modifier + value;
         } else {

@@ -8,12 +8,12 @@ public class Condition {
     public static final Condition HAS      = new Condition("Has",      new Value[] { new Value("type"), new Value("amt", Value.Type.ADD) });
     public static final Condition CONTAINS = new Condition("Contains", new Value[] { new Value("pos"), new Value("type") });
     
-    public static final Value NOTHING  = new Value("type", 1);
-    public static final Value GOLD     = new Value("type", 2);
-    public static final Value WOOD     = new Value("type", 3);
-    public static final Value TOWNHALL = new Value("pos",  4);
-    public static final Value GOLDMINE = new Value("pos",  5);
-    public static final Value FOREST   = new Value("pos",  6);
+    public static final Value NOTHING  = new Value("type", 1, Value.Type.CONSTANT);
+    public static final Value GOLD     = new Value("type", 2, Value.Type.CONSTANT);
+    public static final Value WOOD     = new Value("type", 3, Value.Type.CONSTANT);
+    public static final Value TOWNHALL = new Value("pos",  4, Value.Type.CONSTANT);
+    public static final Value GOLDMINE = new Value("pos",  5, Value.Type.CONSTANT);
+    public static final Value FOREST   = new Value("pos",  6, Value.Type.CONSTANT);
     
     private String name;
     private List<Value> variables;
