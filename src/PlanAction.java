@@ -17,16 +17,15 @@ public class PlanAction {
             List<Condition> delete) {
         this.name = name;
         this.variables = variables;
-        if (this.onlyDefinedVarsIn(preconditions)) {
+        // if (this.onlyDefinedVarsIn(preconditions)) {
             this.preconditions = preconditions;
-        }
-        
-        if (this.onlyDefinedVarsIn(add)) {
+        // }
+        // if (this.onlyDefinedVarsIn(add)) {
             this.add = add;
-        }
-        if (this.onlyDefinedVarsIn(delete)) {
+        // }
+        // if (this.onlyDefinedVarsIn(delete)) {
             this.delete = delete;
-        }
+        // }
     }
 
     public State use(State state, Map<String, Value> values) {
@@ -36,7 +35,7 @@ public class PlanAction {
         List<Condition> newstate = new ArrayList<>(state.getState());
         for (Condition c : add) {
             if (!newstate.contains(c)) {
-                newstate.add(c);
+                newstate.add(new Condition(c, values));
             }
         }
         for (Condition c : delete) {

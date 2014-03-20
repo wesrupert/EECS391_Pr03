@@ -7,16 +7,14 @@ import java.util.Set;
 
 public class Condition {
     private static List<String> holdingNames = new ArrayList<>(Arrays.asList(new String[] {"id", "type"}));
-    public static final Condition HOLDING = new Condition("Holding", holdingNames);
-    
     private static List<String> atNames = new ArrayList<>(Arrays.asList(new String[] {"id", "pos"}));
-    public static final Condition AT = new Condition("At", atNames);
-    
     private static List<String> hasNames = new ArrayList<>(Arrays.asList(new String[] {"type"}));
     private static List<String> hasSums = new ArrayList<>(Arrays.asList(new String[] {"amt"}));
-    public static final Condition HAS = new Condition("Has", hasNames, hasSums);
-
     private static List<String> containsNames = new ArrayList<>(Arrays.asList(new String[] {"pos", "type"}));
+
+    public static final Condition HOLDING = new Condition("Holding", holdingNames);
+    public static final Condition AT = new Condition("At", atNames);
+    public static final Condition HAS = new Condition("Has", hasNames, hasSums);
     public static final Condition CONTAINS = new Condition("Contains", containsNames);
     
     public static final Value NOTHING = new Value(0);
@@ -51,7 +49,11 @@ public class Condition {
         this.variables = new HashMap<>();
         for (String var : original.variables.keySet()) {
             Value value = new Value(original.variables.get(var));
-            value.set(variables.get(var).get());
+            if (value == null) {
+                value = new Value(variables.get(var));
+            } else if (value.type != Value.Type.EQUALS) {
+                value.set(variables.get(var).get());
+            }
             this.variables.put(var, value);
         }
     }
