@@ -52,9 +52,8 @@ public class PlanAction {
 		delete.add(new Condition("At", new Value[] {new Value("id"), new Value("from")}));
 		
 		// Move action is Move(id, from, to)
-		PlanAction moveAction = new PlanAction("Move", new HashSet<String>(Arrays.asList(new String[] {"id", "from", "to"})),
+		return new PlanAction("Move", new HashSet<String>(Arrays.asList(new String[] {"id", "from", "to"})),
 				preconditions, add, delete);
-		return moveAction;
 	}
 	
 	private static PlanAction getHarvestAction() {
@@ -77,9 +76,8 @@ public class PlanAction {
 		delete.add(new Condition("Holding", new Value[] {new Value("id"), new Value(Condition.NOTHING)}));
 		
 		// Harvest action is Harvest(id, pos, type)
-		PlanAction harvestAction = new PlanAction("Harvest", new HashSet<String>(Arrays.asList(new String[] {"id", "pos", "type"})),
+		return new PlanAction("Harvest", new HashSet<String>(Arrays.asList(new String[] {"id", "pos", "type"})),
 				preconditions, add, delete);
-		return harvestAction;
 	}
 	
 	private static PlanAction getDepositAction() {
@@ -102,9 +100,8 @@ public class PlanAction {
 		delete.add(new Condition("Holding", new Value[] {new Value("id"), new Value("type")}));
 		
 		// Deposit action is Deposit(id, type)
-		PlanAction harvestAction = new PlanAction("Deposit", new HashSet<String>(Arrays.asList(new String[] {"id", "type"})),
+		return new PlanAction("Deposit", new HashSet<String>(Arrays.asList(new String[] {"id", "type"})),
 				preconditions, add, delete);
-		return harvestAction;
 	}
 
     public State use(State state, List<Value> values) {
