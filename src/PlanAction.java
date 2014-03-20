@@ -33,13 +33,13 @@ public class PlanAction {
             return null;
         }
         List<Condition> newstate = new ArrayList<>(state.getState());
+        for (Condition c : delete) {
+            newstate.remove(c);
+        }
         for (Condition c : add) {
             if (!newstate.contains(c)) {
                 newstate.add(new Condition(c, values));
             }
-        }
-        for (Condition c : delete) {
-            newstate.remove(c);
         }
         return new State(state, this, values, newstate);
     }

@@ -1,36 +1,61 @@
 class Value {
     public static enum Type { ADD, REMOVE, EQUALS };
+    private String name;
     private int value;
     private Type type;
 
-    public Value(int value) {
-        this(value, Type.EQUALS);
-    }
-
-    public Value(Value other) {
-        this.value = other.value;
-        this.type = other.type;
-    }
-
-    public Value(int initial, Type type) {
+    public Value(String name, int initial, Type type) {
+        this.name = name;
         this.value = initial;
         this.type = type;
     }
 
-    public int get() {
+    public Value(int value) {
+        this(null, value, Type.EQUALS);
+    }
+
+    public Value(String name) {
+        this(name, 0, Type.EQUALS);
+    }
+
+    public Value(String name, Type type) {
+        this(name, 0, type);
+    }
+    
+    public Value(String name, int value) {
+        this(name, value, Type.EQUALS);
+    }
+
+    public Value(Value other) {
+        this(other.name, other.value, other.type);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getValue() {
         return value;
     }
 
-    public int set(int newvalue) {
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public int updateValue(int value) {
         switch (type) {
             case ADD:
-                value += newvalue;
+                this.value += newvalue;
                 return value;
             case REMOVE:
-                value -= newvalue;
+                this.value -= newvalue;
                 return value;
             case EQUALS:
-                value = newvalue;
+                this.value = newvalue;
                 return value;
             default:
                 return 0;
@@ -55,5 +80,14 @@ class Value {
 
     public int compareTo(Value v) {
         return this.value - v.value;
+    }
+
+    public String toString() {
+        String modifier = type == Type.ADD ? "+" : type == Type.REMOVE ? "-" : "";
+        if (name == null) {
+            return modifier + value;
+        } else {
+            return "[" + modifier + name + ", " + value + "]";
+        }
     }
 }
