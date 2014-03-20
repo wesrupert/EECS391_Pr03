@@ -56,19 +56,21 @@ public class State {
 
     public int getHeuristicWeight(bool isGold) {
         int weight = isGold ? GoldValue : WoodValue;
-        String type;
+        Value type = isGold ? Condition.GOLD : Condition.WOOD;
 
-        // Find how much gold we have.
-        Value has = null;
         for (Condition c : state) {
-            if (c.getName().equals("Has") && {
-                has = c.getValue(type);
+            if (c.getValue("type").equals(type)) {
+                // Find how much gold we have.
+                if (c.getName().equals("Has")) {
+                    weight -= c.getValue("amt").get();
+                }
+                // Find how much gold is in transit.
+                if (c.getName().equals("Holding")) {
+                    weight -= 100;
+                }
             }
         }
-        if (has == null) {
-            return -1;
-        }
 
-        return -1;
+        return weight;
     }
 }
