@@ -25,5 +25,19 @@ public class Planner {
 		
 		return null;
 	}
+	
+//    public List<PlanAction> generatePossibleActions() {
+//        List<String> variables = new ArrayList<>();
+//        for (Condition condition : state) {
+//            variables.addAll(condition.getVariables().keySet());
+//        }
+//        
+//        for (PlanAction action : actions) {
+//            //TODO plug variables into actions, see if they are valid
+//            
+//        }
+//        
+//        return null;
+//    }
 
 }

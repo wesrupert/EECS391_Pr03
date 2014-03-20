@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.environment.model.history.History;
 import edu.cwru.sepia.environment.model.state.State.StateView;
@@ -41,18 +40,109 @@ import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 public class PlannerAgent extends Agent {
     private static final long serialVersionUID = -4047208702628325380L;
     private int step;
+    private int scenario;
+    List<PlanAction> plan;
 
     public PlannerAgent(int playernum, String[] arguments) {
         super(playernum);
+        
+        scenario = Integer.parseInt(arguments[0]);
     }
 
     @Override
     public Map<Integer, edu.cwru.sepia.action.Action> initialStep(StateView newstate, History.HistoryView statehistory) {
         step = 0;
+        
+        List<Integer> allUnitIds = newstate.getAllUnitIds();
+		List<Integer> peasantIds = new ArrayList<Integer>();
+		for (int i = 0; i < allUnitIds.size(); i++) {
+			int id = allUnitIds.get(i);
+			UnitView unit = newstate.getUnit(id);
+			String unitTypeName = unit.getTemplateView().getName();
+			if(unitTypeName.equals("Peasant")) {
+				peasantIds.add(id);
+			}
+		}
+		
+        List<PlanAction> actions = getActions();
+        State startState = getStartState(peasantIds.get(0));
+        State goalState = getGoalState();
+        Planner planner = new Planner(actions, startState, goalState);
+        plan = planner.createPlan();
         return middleStep(newstate, statehistory);
     }
 
-    @Override
+	private List<PlanAction> getActions() {
+    	List<PlanAction> actions = new ArrayList<PlanAction>();
+    	
+		switch (scenario) {
+		case 1:
+		case 2:
+			// Single peasant actions
+			//actions.add(PlanAction.getNewMoveAction(peasantIds.get(0).toString(), "Townhall", "Goldmine"));
+			//actions.add(PlanAction.getNewMoveAction(id, from, to))
+		case 3:
+		case 4:
+			// Multiple peasant actions
+			
+		default:
+			return actions;
+		}
+	}
+	
+	private State getStartState(int peasantId) {
+		List<Condition> conditions = new ArrayList<>();
+		
+		Map<String, Value> holdingMap = new HashMap<>();
+		holdingMap.put("id", new Value(peasantId));
+		holdingMap.put("type", Condition.NOTHING);
+		conditions.add(new Condition(Condition.HOLDING, holdingMap));
+		
+		Map<String, Value> atMap = new HashMap<>();
+		atMap.put("id", new Value(peasantId));
+		atMap.put("pos", Condition.TOWNHALL);
+		conditions.add(new Condition(Condition.AT, atMap));
+		
+		Map<String, Value> hasMap = new HashMap<>();
+		hasMap.put("type", Condition.WOOD);
+		hasMap.put("amt", new Value(0));
+		conditions.add(new Condition(Condition.HAS, hasMap));
+		
+		Map<String, Value> hasMap2 = new HashMap<>();
+		hasMap2.put("type", Condition.GOLD);
+		hasMap2.put("amt", new Value(0));
+		conditions.add(new Condition(Condition.HAS, hasMap2));
+		
+		Map<String, Value> containsMap = new HashMap<>();
+		containsMap.put("pos", Condition.GOLDMINE);
+		containsMap.put("type", Condition.GOLD);
+		conditions.add(new Condition(Condition.CONTAINS, containsMap));
+		
+		Map<String, Value> containsMap2 = new HashMap<>();
+		containsMap2.put("pos", Condition.FOREST);
+		containsMap2.put("type", Condition.WOOD);
+		conditions.add(new Condition(Condition.CONTAINS, containsMap2));
+		
+		return new State(conditions);
+	}
+	
+	private State getGoalState() {
+		List<Condition> conditions = new ArrayList<>();
+		
+		Map<String, Value> hasMap = new HashMap<>();
+		hasMap.put("type", Condition.WOOD);
+		hasMap.put("amt", new Value(200));
+		conditions.add(new Condition(Condition.HAS, hasMap));
+		
+		Map<String, Value> hasMap2 = new HashMap<>();
+		hasMap2.put("type", Condition.GOLD);
+		hasMap2.put("amt", new Value(200));
+		conditions.add(new Condition(Condition.HAS, hasMap2));
+		
+		return new State(conditions);
+	}
+
+	@Override
     public Map<Integer, edu.cwru.sepia.action.Action> middleStep(StateView newState, History.HistoryView statehistory) {
         step++;
         Map<Integer,edu.cwru.sepia.action.Action> builder = new HashMap<Integer,edu.cwru.sepia.action.Action>();

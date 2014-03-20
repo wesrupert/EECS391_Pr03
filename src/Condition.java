@@ -1,14 +1,31 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class Condition {
-    private static List<String> holdingNames = new ArrayList<>();
-    holdingNames.add("id");
-    holdingNames.add("type");
-    public static final HOLDING = new Condition("Holding", holdingNames);
+    private static List<String> holdingNames = new ArrayList<>(Arrays.asList(new String[] {"id", "type"}));
+    public static final Condition HOLDING = new Condition("Holding", holdingNames);
+    
+    private static List<String> atNames = new ArrayList<>(Arrays.asList(new String[] {"id", "pos"}));
+    public static final Condition AT = new Condition("At", atNames);
+    
+    private static List<String> hasNames = new ArrayList<>(Arrays.asList(new String[] {"type"}));
+    private static List<String> hasSums = new ArrayList<>(Arrays.asList(new String[] {"amt"}));
+    public static final Condition HAS = new Condition("Has", hasNames, hasSums);
 
+    private static List<String> containsNames = new ArrayList<>(Arrays.asList(new String[] {"pos", "type"}));
+    public static final Condition CONTAINS = new Condition("Contains", containsNames);
+    
+    public static final Value NOTHING = new Value(0);
+    public static final Value GOLD = new Value(1);
+    public static final Value WOOD = new Value(2);
+    public static final Value TOWNHALL = new Value(3);
+    public static final Value GOLDMINE = new Value(4);
+    public static final Value FOREST = new Value(5);
+    
     private String name;
     private Map<String, Value> variables;
 
@@ -97,4 +114,5 @@ public class Condition {
         }
         return temp + ")";
     }
+
 }
