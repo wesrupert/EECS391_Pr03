@@ -58,6 +58,14 @@ public class Condition {
         }
     }
 
+    public boolean setConstant(String name, Value value) {
+        if (variables.containsKey(name) && variables.get(name) != null) {
+            return false;
+        }
+        variables.put(name, value);
+        return true;
+    }
+
     public String getName() {
         return name;
     }
