@@ -49,13 +49,13 @@ class Value {
     public int updateValue(int value) {
         switch (type) {
             case ADD:
-                this.value += newvalue;
+                this.value += value;
                 return value;
             case REMOVE:
-                this.value -= newvalue;
+                this.value -= value;
                 return value;
             case EQUALS:
-                this.value = newvalue;
+                this.value = value;
                 return value;
             default:
                 return 0;

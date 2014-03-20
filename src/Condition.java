@@ -32,7 +32,7 @@ public class Condition {
         for (int i = 0; i < other.variables.size(); i++) {
             Value value = new Value(other.variables.get(i));
             for (Value val : values) {
-                if (value.getName.equals(val.getName())) {
+                if (value.getName().equals(val.getName())) {
                     value.updateValue(val.getValue());
                     break;
                 }

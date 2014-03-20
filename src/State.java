@@ -39,7 +39,7 @@ public class State {
         return this.state;
     }
 
-    public int getHeuristicWeight(bool isGold) {
+    public int getHeuristicWeight(boolean isGold) {
         int weight = isGold ? GoldValue : WoodValue;
         Value type = isGold ? Condition.GOLD : Condition.WOOD;
 
@@ -47,7 +47,7 @@ public class State {
             if (c.getValue("type").equals(type)) {
                 // Find how much gold we have.
                 if (c.getName().equals("Has")) {
-                    weight -= c.getValue("amt").get();
+                    weight -= c.getValue("amt").getValue();
                 }
                 // Find how much gold is in transit.
                 if (c.getName().equals("Holding")) {
