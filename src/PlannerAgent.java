@@ -96,18 +96,18 @@ public class PlannerAgent extends Agent {
 		}
 	}
 
-	private PlanAction getMoveAction() {
+	private static PlanAction getMoveAction() {
 		// Add the precondition At(id, from)
 		List<Condition> preconditions = new ArrayList<>();
-		preconditions.add(new Condition("At", Arrays.asList(new String[] {"id", "from"})));
+		preconditions.add(new Condition("At", new Value[] {new Value("id"), new Value("from")}));
 
 		// Add At(id, to) to the Add list
 		List<Condition> add = new ArrayList<>();
-		add.add(new Condition("At", Arrays.asList(new String[] {"id", "to"})));
+		add.add(new Condition("At", new Value[] {new Value("id"), new Value("to")}));
 		
 		// Add At(id, from) to the delete list
 		List<Condition> delete = new ArrayList<>();
-		delete.add(new Condition("At", Arrays.asList(new String[] {"id", "from"})));
+		delete.add(new Condition("At", new Value[] {new Value("id"), new Value("from")}));
 		
 		// Move action is Move(id, from, to)
 		PlanAction moveAction = new PlanAction("Move", new HashSet<String>(Arrays.asList(new String[] {"id", "from", "to"})),
@@ -115,27 +115,24 @@ public class PlannerAgent extends Agent {
 		return moveAction;
 	}
 	
-	private PlanAction getHarvestAction() {
+	private static PlanAction getHarvestAction() {
 		// Add the precondition Holding(id, Nothing)
 		List<Condition> preconditions = new ArrayList<>();
-		//TODO how the hell do we get Nothing?
-		preconditions.add(new Condition("Holding", Arrays.asList(new String[] {"id", "XXXXXXXXXXXXXXX"})));
-		
+		preconditions.add(new Condition("Holding", new Value[] {new Value("id"), new Value(Condition.NOTHING)}));
 		
 		// Add the precondition At(id, pos)
-		preconditions.add(new Condition("At", Arrays.asList(new String[] {"id", "pos"})));
+		preconditions.add(new Condition("At", new Value[] {new Value("id"), new Value("pos")}));
 		
 		// Add the precondition Contains(pos, type)
-		preconditions.add(new Condition("Contains", Arrays.asList(new String[] {"pos", "type"})));
+		preconditions.add(new Condition("Contains", new Value[] {new Value("pos"), new Value("type")}));
 		
 		// Add Holding(id, type) to the Add list
 		List<Condition> add = new ArrayList<>();
-		add.add(new Condition("Holding", Arrays.asList(new String[] {"id", "type"})));
+		add.add(new Condition("Holding", new Value[] {new Value("id"), new Value("type")}));
 		
-		// Add Holding(id, nothing) to the delete list
+		// Add Holding(id, Nothing) to the delete list
 		List<Condition> delete = new ArrayList<>();
-		//TODO same problem with Nothing constant
-		delete.add(new Condition("At", Arrays.asList(new String[] {"id", "XXXXXXXXXXXXXXXXXXXXX"})));
+		delete.add(new Condition("Holding", new Value[] {new Value("id"), new Value(Condition.NOTHING)}));
 		
 		// Harvest action is Harvest(id, pos, type)
 		PlanAction harvestAction = new PlanAction("Harvest", new HashSet<String>(Arrays.asList(new String[] {"id", "pos", "type"})),
@@ -143,62 +140,64 @@ public class PlannerAgent extends Agent {
 		return harvestAction;
 	}
 	
-	private PlanAction getDepositAction() {
+	private static PlanAction getDepositAction() {
 		// Add the precondition Holding(id, type)
 		List<Condition> preconditions = new ArrayList<>();
-		//TODO how the hell do we get Nothing?
-		preconditions.add(new Condition("Holding", Arrays.asList(new String[] {"id", "XXXXXXXXXXXXXXX"})));
+		preconditions.add(new Condition("Holding", new Value[] {new Value("id"), new Value("type")}));
 		
-		
-		// Add the precondition At(Townhall)
-		preconditions.add(new Condition("At", Arrays.asList(new String[] {"id", "pos"})));
+		// Add the precondition At(id, Townhall)
+		preconditions.add(new Condition("At", new Value[] {new Value("id"), new Value(Condition.TOWNHALL)}));
 
-		// Add Holding(id, type) to the Add list
+		// Add Holding(id, Nothing) to the Add list
 		List<Condition> add = new ArrayList<>();
-		add.add(new Condition("Holding", Arrays.asList(new String[] {"id", "type"})));
+		add.add(new Condition("Holding", new Value[] {new Value("id"), new Value(Condition.NOTHING)}));
 		
-		// Add Holding(id, nothing) to the delete list
+		// Add +Has(type, amt) to the Add list
+		add.add(new Condition("Has", new Value[] {new Value("type"), new Value("amt", Value.Type.ADD)}));
+		
+		// Add Holding(id, type) to the delete list
 		List<Condition> delete = new ArrayList<>();
-		//TODO same problem with Nothing constant
-		delete.add(new Condition("At", Arrays.asList(new String[] {"id", "XXXXXXXXXXXXXXXXXXXXX"})));
+		delete.add(new Condition("Holding", new Value[] {new Value("id"), new Value("type")}));
 		
-		// Harvest action is Harvest(id, pos, type)
-		PlanAction harvestAction = new PlanAction("Harvest", new HashSet<String>(Arrays.asList(new String[] {"id", "pos", "type"})),
+		// Deposit action is Deposit(id, type)
+		PlanAction harvestAction = new PlanAction("Deposit", new HashSet<String>(Arrays.asList(new String[] {"id", "type"})),
 				preconditions, add, delete);
 		return harvestAction;
 	}
+	
+	//TODO fix this after the refactor
 	private State getStartState(int peasantId) {
 		List<Condition> conditions = new ArrayList<>();
 		
-		Map<String, Value> holdingMap = new HashMap<>();
-		holdingMap.put("id", new Value(peasantId));
-		holdingMap.put("type", Condition.NOTHING);
-		conditions.add(new Condition(Condition.HOLDING, holdingMap));
-		
-		Map<String, Value> atMap = new HashMap<>();
-		atMap.put("id", new Value(peasantId));
-		atMap.put("pos", Condition.TOWNHALL);
-		conditions.add(new Condition(Condition.AT, atMap));
-		
-		Map<String, Value> hasMap = new HashMap<>();
-		hasMap.put("type", Condition.WOOD);
-		hasMap.put("amt", new Value(0));
-		conditions.add(new Condition(Condition.HAS, hasMap));
-		
-		Map<String, Value> hasMap2 = new HashMap<>();
-		hasMap2.put("type", Condition.GOLD);
-		hasMap2.put("amt", new Value(0));
-		conditions.add(new Condition(Condition.HAS, hasMap2));
-		
-		Map<String, Value> containsMap = new HashMap<>();
-		containsMap.put("pos", Condition.GOLDMINE);
-		containsMap.put("type", Condition.GOLD);
-		conditions.add(new Condition(Condition.CONTAINS, containsMap));
-		
-		Map<String, Value> containsMap2 = new HashMap<>();
-		containsMap2.put("pos", Condition.FOREST);
-		containsMap2.put("type", Condition.WOOD);
-		conditions.add(new Condition(Condition.CONTAINS, containsMap2));
+//		Map<String, Value> holdingMap = new HashMap<>();
+//		holdingMap.put("id", new Value(peasantId));
+//		holdingMap.put("type", Condition.NOTHING);
+//		conditions.add(new Condition(Condition.HOLDING, holdingMap));
+//		
+//		Map<String, Value> atMap = new HashMap<>();
+//		atMap.put("id", new Value(peasantId));
+//		atMap.put("pos", Condition.TOWNHALL);
+//		conditions.add(new Condition(Condition.AT, atMap));
+//		
+//		Map<String, Value> hasMap = new HashMap<>();
+//		hasMap.put("type", Condition.WOOD);
+//		hasMap.put("amt", new Value(0));
+//		conditions.add(new Condition(Condition.HAS, hasMap));
+//		
+//		Map<String, Value> hasMap2 = new HashMap<>();
+//		hasMap2.put("type", Condition.GOLD);
+//		hasMap2.put("amt", new Value(0));
+//		conditions.add(new Condition(Condition.HAS, hasMap2));
+//		
+//		Map<String, Value> containsMap = new HashMap<>();
+//		containsMap.put("pos", Condition.GOLDMINE);
+//		containsMap.put("type", Condition.GOLD);
+//		conditions.add(new Condition(Condition.CONTAINS, containsMap));
+//		
+//		Map<String, Value> containsMap2 = new HashMap<>();
+//		containsMap2.put("pos", Condition.FOREST);
+//		containsMap2.put("type", Condition.WOOD);
+//		conditions.add(new Condition(Condition.CONTAINS, containsMap2));
 		
 		return new State(conditions);
 	}
@@ -221,15 +220,16 @@ public class PlannerAgent extends Agent {
 			gold = 3000;
 		}
 		
-		Map<String, Value> hasMap = new HashMap<>();
-		hasMap.put("type", Condition.WOOD);
-		hasMap.put("amt", new Value(wood));
-		conditions.add(new Condition(Condition.HAS, hasMap));
-		
-		Map<String, Value> hasMap2 = new HashMap<>();
-		hasMap2.put("type", Condition.GOLD);
-		hasMap2.put("amt", new Value(gold));
-		conditions.add(new Condition(Condition.HAS, hasMap2));
+		//TODO fix this after the refactor
+//		Map<String, Value> hasMap = new HashMap<>();
+//		hasMap.put("type", Condition.WOOD);
+//		hasMap.put("amt", new Value(wood));
+//		conditions.add(new Condition(Condition.HAS, hasMap));
+//		
+//		Map<String, Value> hasMap2 = new HashMap<>();
+//		hasMap2.put("type", Condition.GOLD);
+//		hasMap2.put("amt", new Value(gold));
+//		conditions.add(new Condition(Condition.HAS, hasMap2));
 		
 		return new State(conditions);
 	}

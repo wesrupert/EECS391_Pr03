@@ -1,6 +1,5 @@
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class Condition {
@@ -9,12 +8,12 @@ public class Condition {
     public static final Condition HAS      = new Condition("Has",      new Value[] { new Value("type"), new Value("amt", Value.Type.ADD) });
     public static final Condition CONTAINS = new Condition("Contains", new Value[] { new Value("pos"), new Value("type") });
     
-    public static final Value NOTHING  = new Value("type", 0);
-    public static final Value GOLD     = new Value("type", 1);
-    public static final Value WOOD     = new Value("type", 2);
-    public static final Value TOWNHALL = new Value("pos",  3);
-    public static final Value GOLDMINE = new Value("pos",  4);
-    public static final Value FOREST   = new Value("pos",  5);
+    public static final Value NOTHING  = new Value("type", 1);
+    public static final Value GOLD     = new Value("type", 2);
+    public static final Value WOOD     = new Value("type", 3);
+    public static final Value TOWNHALL = new Value("pos",  4);
+    public static final Value GOLDMINE = new Value("pos",  5);
+    public static final Value FOREST   = new Value("pos",  6);
     
     private String name;
     private List<Value> variables;
@@ -36,7 +35,21 @@ public class Condition {
     }
 
     @Override
-    public boolean equals(Condition cond) {
+    public boolean equals(Object o) {
+    	
+    	if (o == null) {
+    		return false;
+    	}
+    	
+    	if (o == this) {
+    		return true;
+    	}
+    	
+    	if (!(o instanceof Condition)) {
+    		return false;
+    	}
+    	
+    	Condition cond = (Condition) o;
         if (!name.equals(cond.name)) {
             return false;
         } else if (variables.size() != cond.variables.size()) {
