@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -6,18 +5,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class Condition {
-    private static List<String> holdingNames = new ArrayList<>(Arrays.asList(new String[] {"id", "type"}));
-    public static final Condition HOLDING = new Condition("Holding", holdingNames);
-    
-    private static List<String> atNames = new ArrayList<>(Arrays.asList(new String[] {"id", "pos"}));
-    public static final Condition AT = new Condition("At", atNames);
-    
-    private static List<String> hasNames = new ArrayList<>(Arrays.asList(new String[] {"type"}));
-    private static List<String> hasSums = new ArrayList<>(Arrays.asList(new String[] {"amt"}));
-    public static final Condition HAS = new Condition("Has", hasNames, hasSums);
-
-    private static List<String> containsNames = new ArrayList<>(Arrays.asList(new String[] {"pos", "type"}));
-    public static final Condition CONTAINS = new Condition("Contains", containsNames);
+    public static final Condition HOLDING = new Condition("Holding", Arrays.asList(new String[] {"id", "type"}));
+    public static final Condition AT = new Condition("At", Arrays.asList(new String[] {"id", "pos"}));
+    public static final Condition HAS = new Condition("Has", Arrays.asList(new String[] {"type"}), Arrays.asList(new String[] {"amt"}));
+    public static final Condition CONTAINS = new Condition("Contains", Arrays.asList(new String[] {"pos", "type"}));
     
     public static final Value NOTHING = new Value(0);
     public static final Value GOLD = new Value(1);
