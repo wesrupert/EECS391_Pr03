@@ -1,12 +1,10 @@
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.ArrayList;
 
 class PossibleConditions {
     private int[] ids, locations, types;
     private List<Condition> holding, at, contains;
-    private List<Map<String, Value>> states;
+    private List<List<Value>> states;
 
     public PossibleConditions(int[] ids, int[] locations, int[] types) {
         this.ids = ids;
@@ -74,11 +72,11 @@ class PossibleConditions {
         for (int id : ids) {
             for (int location : locations) {
                 for (int type : types) {
-                    Map<String, Value> map = new HashMap<>();
-                    map.put("id", new Value(id));
-                    map.put("pos", new Value(location));
-                    map.put("type", new Value(type));
-                    list.add(map);
+                    List<Value> values = new ArrayList<>();
+                    values.add(new Value("id", id));
+                    values.add(new Value("pos", location));
+                    values.add(new Value("type", type));
+                    list.add(values);
                 }
             }
         }
