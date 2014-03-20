@@ -20,6 +20,7 @@ public class PlanAction {
         if (this.onlyDefinedVarsIn(preconditions)) {
             this.preconditions = preconditions;
         }
+        
         if (this.onlyDefinedVarsIn(add)) {
             this.add = add;
         }
@@ -60,6 +61,10 @@ public class PlanAction {
     public String getName() {
         return this.name;
     }
+    
+    public Set<String> getVariables() {
+    	return this.variables;
+    }
 
     public List<Condition> getPreconditions() {
         return this.preconditions;
@@ -82,6 +87,7 @@ public class PlanAction {
         return true;
     }
 
+    //XXX What use is this exactly?
     private boolean onlyDefinedVarsIn(Set<String> variables) {
         for (String var : variables) {
             if (!variables.contains(var)) {
