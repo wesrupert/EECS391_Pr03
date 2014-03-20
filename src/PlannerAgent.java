@@ -22,6 +22,7 @@
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,35 +80,29 @@ public class PlannerAgent extends Agent {
 	private State getStartState(int peasantId) {
 		List<Condition> conditions = new ArrayList<>();
 		
-//		Map<String, Value> holdingMap = new HashMap<>();
-//		holdingMap.put("id", new Value(peasantId));
-//		holdingMap.put("type", Condition.NOTHING);
-//		conditions.add(new Condition(Condition.HOLDING, holdingMap));
-//		
-//		Map<String, Value> atMap = new HashMap<>();
-//		atMap.put("id", new Value(peasantId));
-//		atMap.put("pos", Condition.TOWNHALL);
-//		conditions.add(new Condition(Condition.AT, atMap));
-//		
-//		Map<String, Value> hasMap = new HashMap<>();
-//		hasMap.put("type", Condition.WOOD);
-//		hasMap.put("amt", new Value(0));
-//		conditions.add(new Condition(Condition.HAS, hasMap));
-//		
-//		Map<String, Value> hasMap2 = new HashMap<>();
-//		hasMap2.put("type", Condition.GOLD);
-//		hasMap2.put("amt", new Value(0));
-//		conditions.add(new Condition(Condition.HAS, hasMap2));
-//		
-//		Map<String, Value> containsMap = new HashMap<>();
-//		containsMap.put("pos", Condition.GOLDMINE);
-//		containsMap.put("type", Condition.GOLD);
-//		conditions.add(new Condition(Condition.CONTAINS, containsMap));
-//		
-//		Map<String, Value> containsMap2 = new HashMap<>();
-//		containsMap2.put("pos", Condition.FOREST);
-//		containsMap2.put("type", Condition.WOOD);
-//		conditions.add(new Condition(Condition.CONTAINS, containsMap2));
+		// Add condition Holding(Peasant1, Nothing)
+		conditions.add(new Condition(Condition.HOLDING, Arrays.asList(
+				new Value[]{new Value("id", peasantId), new Value(Condition.NOTHING)})));
+		
+		// Add condition At(peasent1, Townhall)
+		conditions.add(new Condition(Condition.AT, Arrays.asList(
+				new Value[]{new Value("id", peasantId), new Value(Condition.TOWNHALL)})));
+		
+		// Add condition Has(wood, 0)
+		conditions.add(new Condition(Condition.HAS, Arrays.asList(
+				new Value[]{new Value(Condition.WOOD), new Value("amt", Value.Type.ADD)})));
+		
+		// Add condition Has(gold, 0)
+		conditions.add(new Condition(Condition.HAS, Arrays.asList(
+				new Value[]{new Value(Condition.GOLD), new Value("amt", Value.Type.ADD)})));
+		
+		// Add condition Contains(Goldmine, gold)
+		conditions.add(new Condition(Condition.CONTAINS, Arrays.asList(
+				new Value[]{new Value(Condition.GOLDMINE), new Value(Condition.GOLD)})));
+		
+		// Add condition Contains(Forest, wood)
+		conditions.add(new Condition(Condition.CONTAINS, Arrays.asList(
+				new Value[]{new Value(Condition.FOREST), new Value(Condition.WOOD)})));
 		
 		return new State(conditions);
 	}
@@ -130,16 +125,13 @@ public class PlannerAgent extends Agent {
 			gold = 3000;
 		}
 		
-		//TODO fix this after the refactor
-//		Map<String, Value> hasMap = new HashMap<>();
-//		hasMap.put("type", Condition.WOOD);
-//		hasMap.put("amt", new Value(wood));
-//		conditions.add(new Condition(Condition.HAS, hasMap));
-//		
-//		Map<String, Value> hasMap2 = new HashMap<>();
-//		hasMap2.put("type", Condition.GOLD);
-//		hasMap2.put("amt", new Value(gold));
-//		conditions.add(new Condition(Condition.HAS, hasMap2));
+		// Add condition Has(Wood, AMT)
+		conditions.add(new Condition(Condition.HAS, Arrays.asList(
+				new Value[]{new Value(Condition.WOOD), new Value("amt", wood)})));
+		
+		// Add condition Has(Gold, AMT)
+		conditions.add(new Condition(Condition.HAS, Arrays.asList(
+				new Value[]{new Value(Condition.GOLD), new Value("amt", gold)})));
 		
 		return new State(conditions);
 	}

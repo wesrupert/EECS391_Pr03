@@ -49,6 +49,8 @@ public class Condition {
         return variables;
     }
 
+    // XXX Ehh, this might not work the way you want it to.
+    // We shouldn't be comparing them based on name, only value.
     @Override
     public boolean equals(Object o) {
         return this.toString().equals(o.toString());

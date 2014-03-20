@@ -29,6 +29,7 @@ public class PlanAction {
 			
 			actions.add(getMoveAction());
 			actions.add(getHarvestAction());
+			actions.add(getDepositAction());
 		case 3:
 		case 4:
 			// Multiple peasant actions
