@@ -17,7 +17,7 @@ public class Planner {
 	}
 	
 	// TODO
-	public List<PlanAction> createPlan() {
+	public List<State> createPlan() {
 		for (Condition goalCondition : goalState.getState()) {
 			//TODO solve goal conditions one at a time
 			

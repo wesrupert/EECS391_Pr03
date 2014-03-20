@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.environment.model.history.History;
 import edu.cwru.sepia.environment.model.state.State.StateView;
@@ -41,7 +42,7 @@ public class PlannerAgent extends Agent {
     private static final long serialVersionUID = -4047208702628325380L;
     private int step;
     private int scenario;
-    List<PlanAction> plan;
+    List<State> plan;
 
     public PlannerAgent(int playernum, String[] arguments) {
         super(playernum);
@@ -67,8 +68,10 @@ public class PlannerAgent extends Agent {
         List<PlanAction> actions = getActions();
         State startState = getStartState(peasantIds.get(0));
         State goalState = getGoalState();
+        
         Planner planner = new Planner(actions, startState, goalState);
         plan = planner.createPlan();
+        
         return middleStep(newstate, statehistory);
     }
 
@@ -146,6 +149,33 @@ public class PlannerAgent extends Agent {
     public Map<Integer, edu.cwru.sepia.action.Action> middleStep(StateView newState, History.HistoryView statehistory) {
         step++;
         Map<Integer,edu.cwru.sepia.action.Action> builder = new HashMap<Integer,edu.cwru.sepia.action.Action>();
+        
+        List<Integer> allUnitIds = newState.getAllUnitIds();
+		List<Integer> peasantIds = new ArrayList<Integer>();
+		List<Integer> townhallIds = new ArrayList<Integer>();
+		for(int i=0; i<allUnitIds.size(); i++) {
+			int id = allUnitIds.get(i);
+			UnitView unit = newState.getUnit(id);
+			String unitTypeName = unit.getTemplateView().getName();
+			if(unitTypeName.equals("TownHall"))
+				townhallIds.add(id);
+			if(unitTypeName.equals("Peasant"))
+				peasantIds.add(id);
+		}
+		
+		Action b = null;
+		State action = plan.remove(0);
+//		
+//		if (name.equalsIgnoreCase("Move")) {
+//			action.
+//		}
+//		b = new TargetedAction(peasantId, ActionType.COMPOUNDDEPOSIT, townhallId);
+//		
+//		List<Integer> resourceIds = currentState.getResourceNodeIds(Type.TREE);
+//		b = new TargetedAction(peasantId, ActionType.COMPOUNDGATHER, resourceIds.get(0));
+//
+//		builder.put(peasantId, b);
+//        
         return builder;
     }
 
