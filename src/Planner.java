@@ -20,7 +20,6 @@ public class Planner {
 		plan.add(startState);
 		
 		for (Condition goalCondition : goalState.getState()) {
-			//TODO set static gold/wood goal in State to use in heuristic
 			State.isGold = goalCondition.getValue("type").getValue() == Condition.GOLD.getValue();
 			
 			List<State> goalPath = getPathToGoal(goalCondition, plan.get(plan.size() - 1));

@@ -52,7 +52,7 @@ public class PlanAction {
 			actions.add(PossibleConditions.getDepositAction(2));
 			actions.add(PossibleConditions.getDepositAction(3));
 			actions.add(PossibleConditions.getMoveAction(2));
-			actions.add(PossibleConditions.getMoveAction(2));
+			actions.add(PossibleConditions.getMoveAction(3));
             actions.add(PossibleConditions.getBuildPeasantAction());
         case 2:
         case 1:
@@ -60,7 +60,6 @@ public class PlanAction {
             actions.add(PossibleConditions.getHarvestAction());
             actions.add(PossibleConditions.getDepositAction());
             actions.add(PossibleConditions.getMoveAction());
-
 		}
 		return actions;
 	}

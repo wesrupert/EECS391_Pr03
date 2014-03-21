@@ -68,8 +68,8 @@ public class State implements Comparable<State> {
     }
 
     private int getHeuristicWeight(boolean isGold) {
-        int weight = this.isGold ? GoldValue : WoodValue;
-        Value type = this.isGold ? Condition.GOLD : Condition.WOOD;
+        int weight = State.isGold ? GoldValue : WoodValue;
+        Value type = State.isGold ? Condition.GOLD : Condition.WOOD;
 
         for (Condition c : state) {
             if (c.getName().equals("Has") && c.getValue("type").equals(type)) {
@@ -87,12 +87,12 @@ public class State implements Comparable<State> {
         // Get weight determined by proximity.
         int numAt = 0;
         for (int i = 0; i < 3; i++) {
-        	if (isHolding(i, this.isGold)) {
+        	if (isHolding(i, State.isGold)) {
         		if (isAtTH(i)) {
         			numAt++;
         		}
         	} else {
-        		if (isAt(i, this.isGold)) {
+        		if (isAt(i, State.isGold)) {
         			numAt++;
         		}
         	}
@@ -188,8 +188,8 @@ public class State implements Comparable<State> {
                 new Value[] { new Value("amt", numpeas, Value.Type.ADD) })));
 				
 		State newState = new State(conditions);
-		newState.GoldValue = 0;
-		newState.WoodValue = 0;
+		State.GoldValue = 0;
+		State.WoodValue = 0;
 		return newState;
 	}
 	
@@ -223,8 +223,8 @@ public class State implements Comparable<State> {
 				new Value[]{new Value(Condition.WOOD), new Value("amt", wood)})));
 		
 		State newState = new State(conditions);
-		newState.GoldValue = gold;
-		newState.WoodValue = wood;
+		State.GoldValue = gold;
+		State.WoodValue = wood;
 		return newState;
 	}
 

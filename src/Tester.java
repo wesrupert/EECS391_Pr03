@@ -10,12 +10,12 @@ public class Tester {
 		List<State> plan;
 
 		// Test single-peasant scenarios.
-		actions = PlanAction.getActions(1);
-        startState = State.getStartState(1);
-        goalState = State.getGoalState(1);
-        planner = new Planner(actions, startState, goalState);
-        plan = planner.createPlan();
-        Planner.printPlan(plan, System.out);
+//		actions = PlanAction.getActions(1);
+//        startState = State.getStartState(1);
+//        goalState = State.getGoalState(1);
+//        planner = new Planner(actions, startState, goalState);
+//        plan = planner.createPlan();
+//        Planner.printPlan(plan, System.out);
 
         // Test multi-peasant scenarios.
 		actions = PlanAction.getActions(4);
