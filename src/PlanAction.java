@@ -53,6 +53,12 @@ public class PlanAction {
 		case 3:
 		case 4:
 			// Multiple peasant actions
+			actions.add(PossibleConditions.getMoveAction(2));
+			actions.add(PossibleConditions.getMoveAction(2));
+			actions.add(PossibleConditions.getHarvestAction(2));
+			actions.add(PossibleConditions.getHarvestAction(3));
+			actions.add(PossibleConditions.getDepositAction(2));
+			actions.add(PossibleConditions.getDepositAction(3));
 			break;
 		}
 		return actions;
