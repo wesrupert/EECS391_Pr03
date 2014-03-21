@@ -44,28 +44,22 @@ public class PlanAction {
 		List<PlanAction> actions = new ArrayList<PlanAction>();
 
 		switch (scenario) {
-		case 1:
-		case 2:
-			// Single peasant actions
-
-			actions.add(PossibleConditions.getHarvestAction());
-			actions.add(PossibleConditions.getDepositAction());
-			actions.add(PossibleConditions.getMoveAction());
-			break;
-		case 3:
 		case 4:
+		case 3:
 			// Multiple peasant actions
-			actions.add(PossibleConditions.getHarvestAction());
 			actions.add(PossibleConditions.getHarvestAction(2));
 			actions.add(PossibleConditions.getHarvestAction(3));
-			actions.add(PossibleConditions.getDepositAction());
 			actions.add(PossibleConditions.getDepositAction(2));
 			actions.add(PossibleConditions.getDepositAction(3));
-			actions.add(PossibleConditions.getMoveAction());
 			actions.add(PossibleConditions.getMoveAction(2));
 			actions.add(PossibleConditions.getMoveAction(3));
-			actions.add(PossibleConditions.getBuildPeasantAction());
-			break;
+            actions.add(PossibleConditions.getBuildPeasantAction());
+        case 2:
+        case 1:
+            // Single peasant actions
+            actions.add(PossibleConditions.getHarvestAction());
+            actions.add(PossibleConditions.getDepositAction());
+            actions.add(PossibleConditions.getMoveAction());
 		}
 		return actions;
 	}
