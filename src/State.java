@@ -45,15 +45,16 @@ public class State implements Comparable<State> {
     }
 
     public int getHeuristicWeight() {
-    	return 2 * 400 // TODO: Change the 2 to a peasant count
+    	return 2 * -400 // TODO: Change the 2 to a peasant count
     		+ this.getHeuristicWeight(true)
     		+ this.getHeuristicWeight(false)
-    		- depth * 100;
+    		+ depth * 100;
     }
 
     private int getHeuristicWeight(boolean isGold) {
         int weight = isGold ? GoldValue : WoodValue;
         Value type = isGold ? Condition.GOLD : Condition.WOOD;
+        int id = isGold ? 14 : 15;
 
         for (Condition c : state) {
             if (c.getValue("type").equals(type)) {
@@ -71,7 +72,9 @@ public class State implements Comparable<State> {
         // Get weight determined by proximity.
         int numAt = 0;
         for (Condition c : state) {
-        	if (c.getName().equals("Has")) {
+        	if (c.getName().equals("At") &&
+        		c.getValue("pos") != null &&
+        		c.getValue("pos").getValue() == id) {
         		numAt++;
         	}
         }
