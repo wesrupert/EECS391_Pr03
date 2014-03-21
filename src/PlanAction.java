@@ -159,7 +159,7 @@ public class PlanAction {
 		List<Value[]> variableCombos = new ArrayList<>();
 		
 		switch (name) {
-		case "Move":
+		case "Move1":
 			for (Value unit : units) {
 				for (Value position1 : positions) {
 					for (Value position2 : positions) {
@@ -171,7 +171,7 @@ public class PlanAction {
 				}
 			}
 			break;
-		case "Harvest":
+		case "Harvest1":
 			for (Value unit : units) {
 				for (Value position : positions) {
 					for (Value type : types) {
@@ -180,7 +180,7 @@ public class PlanAction {
 				}
 			}
 			break;
-		case "Deposit":
+		case "Deposit1":
 			for (Value unit : units) {
 				for (Value type : types) {
 					if (type.equals(Condition.NOTHING)) {
@@ -202,5 +202,43 @@ public class PlanAction {
 		}
 		
 		return possibleActions;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+    		return false;
+    	}
+    	if (o == this) {
+    		return true;
+    	}
+    	if (!(o instanceof PlanAction)) {
+    		return false;
+    	}
+    	PlanAction action = (PlanAction) o;
+    	
+    	if (!action.getName().equals(name) || action.isAppliedAction() != isAppliedAction || action.getVariables().size() != variables.size()) {
+    		return false;
+    	}
+    	
+    	if (isAppliedAction) {
+    		if (action.getConstants().size() != constants.size()) {
+    			return false;
+    		}
+    		
+    		for (int i = 0; i < constants.size(); i++) {
+    			if (!constants.get(i).equals(action.getConstants().get(i))) {
+    				return false;
+    			}
+    		}
+    	} else {
+    		for (int i = 0; i < variables.size(); i++) {
+    			if (!constants.get(i).equals(action.getVariables().get(i))) {
+    				return false;
+    			}
+    		}
+    	}
+    	
+    	return true;
 	}
 }

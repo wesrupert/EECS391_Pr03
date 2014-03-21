@@ -1,8 +1,7 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 
 public class Planner {
@@ -31,12 +30,14 @@ public class Planner {
 
 	private List<State> getPathToGoal(Condition goalCondition, State currentState) {
         // Find a goal state.
-        SortedSet<State> states = new TreeSet<>();
+        List<State> states = new ArrayList<>();
         states.add(currentState);
-        State current = states.first();
+        State current = states.get(0);
 		while (!current.isGoalState(goalCondition)) {
             states.addAll(getNextStates(current));
-            current = states.first();
+            states.remove(current);
+            Collections.sort(states);
+            current = states.get(0);
 		}
 
         // Generate the list from the found state.
@@ -71,9 +72,13 @@ public class Planner {
         outer:
         for (Value variable : variables) {
         	List<Value> addList = null;
-        	if (variable.getName().equalsIgnoreCase("id")) {
+        	if (variable.getName().equalsIgnoreCase("first")
+        			|| variable.getName().equalsIgnoreCase("scond")
+        			|| variable.getName().equalsIgnoreCase("third")) {
         		addList = units;
-        	} else if (variable.getName().equalsIgnoreCase("pos")) {
+        	} else if (variable.getName().equalsIgnoreCase("pos")
+        			|| variable.getName().equalsIgnoreCase("to")
+        			|| variable.getName().equalsIgnoreCase("from")) {
         		addList = positions;
         	} else if (variable.getName().equalsIgnoreCase("type")) {
         		addList = types;
@@ -82,7 +87,7 @@ public class Planner {
         	}
         	
         	if (addList == null) {
-        		System.out.println("Unrecognized variable name!!!" + variable.getName());
+        		System.out.println("Unrecognized variable name!!! " + variable.getName());
         		continue;
         	}
         	
@@ -97,8 +102,14 @@ public class Planner {
         List<PlanAction> validActions = new ArrayList<>();
         for (PlanAction actionTemplate : availableActions) {
             List<PlanAction> possibleActions = actionTemplate.getPossibleActions(units, positions, types);
+            inner:
             for (PlanAction action : possibleActions) {
             	if (action.isApplicableTo(state)) {
+            		for (PlanAction existingAction : validActions) {
+            			if (existingAction.equals(action)) {
+            				continue inner;
+            			}
+            		}
             		validActions.add(action);
             	}
             }

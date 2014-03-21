@@ -67,7 +67,7 @@ public class State implements Comparable<State> {
         Value type = isGold ? Condition.GOLD : Condition.WOOD;
 
         for (Condition c : state) {
-            if (c.getValue("type").equals(type)) {
+            if (c.getName().equals("Has") && c.getValue("type").equals(type)) {
                 // Find how much gold we have.
                 if (c.getName().equals("Has")) {
                     weight -= c.getValue("amt").getValue();
@@ -92,7 +92,7 @@ public class State implements Comparable<State> {
         		}
         	}
         }
-        weight += (weight / 100) * numAt;
+        weight -= (weight / 100) * numAt;
 
         return weight;
     }
@@ -141,11 +141,11 @@ public class State implements Comparable<State> {
 		
 		// Add condition Holding(Peasant1, Nothing)
 		conditions.add(new Condition(Condition.HOLDING, Arrays.asList(
-				new Value[]{new Value("id", peasantId), new Value(Condition.NOTHING)})));
+				new Value[]{new Value("first", peasantId), new Value(Condition.NOTHING)})));
 		
 		// Add condition At(peasent1, Townhall)
 		conditions.add(new Condition(Condition.AT, Arrays.asList(
-				new Value[]{new Value("id", peasantId), new Value(Condition.TOWNHALL)})));
+				new Value[]{new Value("first", peasantId), new Value(Condition.TOWNHALL)})));
 		
 		// Add condition Has(wood, 0)
 		conditions.add(new Condition(Condition.HAS, Arrays.asList(
@@ -162,8 +162,10 @@ public class State implements Comparable<State> {
 		// Add condition Contains(Forest, wood)
 		conditions.add(new Condition(Condition.CONTAINS, Arrays.asList(
 				new Value[]{new Value(Condition.FOREST), new Value(Condition.WOOD)})));
-		
-		return new State(conditions);
+		State newState = new State(conditions);
+		newState.GoldValue = 0;
+		newState.WoodValue = 0;
+		return newState;
 	}
 	
 	public static State getGoalState(int scenario) {
@@ -195,7 +197,10 @@ public class State implements Comparable<State> {
 		conditions.add(new Condition(Condition.HAS, Arrays.asList(
 				new Value[]{new Value(Condition.GOLD), new Value("amt", gold)})));
 		
-		return new State(conditions);
+		State newState = new State(conditions);
+		newState.GoldValue = gold;
+		newState.WoodValue = wood;
+		return newState;
 	}
 
 	 public int compareTo(State other) {
