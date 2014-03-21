@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class State {
+public class State implements Comparable {
     public static int GoldValue;
     public static int WoodValue;
 
@@ -41,7 +41,11 @@ public class State {
         return this.state;
     }
 
-    public int getHeuristicWeight(boolean isGold) {
+    public int getHeuristicWeight() {
+    	return this.getHeuristicWeight(true) + this.getHeuristicWeight(false);
+    }
+
+    private int getHeuristicWeight(boolean isGold) {
         int weight = isGold ? GoldValue : WoodValue;
         Value type = isGold ? Condition.GOLD : Condition.WOOD;
 
