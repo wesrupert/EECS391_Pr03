@@ -19,8 +19,11 @@
  */
 //package edu.cwru.sepia.agent;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +81,17 @@ public class PlannerAgent extends Agent {
         Planner planner = new Planner(actions, startState, goalState);
         plan = planner.createPlan();
         
-        Planner.printPlan(plan, System.out);
+        File outFile = new File("Scenario_" + scenario + "_plan.txt");
+        try {
+			PrintStream out = new PrintStream(outFile);
+			Planner.printPlan(plan, out);
+			out.close();
+		} catch (FileNotFoundException e) {
+			System.err.println("Could not write to file!");
+			e.printStackTrace();
+		}
+        
+        
         
         return middleStep(newstate, statehistory);
     }
@@ -103,7 +116,11 @@ public class PlannerAgent extends Agent {
 		
 		Action b = null;
 		
-		State state = plan.get(curState);
+		State state = getNextAction(newState, townhalls.get(0));
+		
+		if (state == null) {
+			return builder;
+		}
 		
 		System.out.println("Executing Action:");
 		printStateAction(state);
@@ -122,15 +139,10 @@ public class PlannerAgent extends Agent {
 			peasant = newState.getUnit(peasantId);
 			resource = findClosestResource(peasant, location, newState);
 			if (resource != null) {
-				if (isAdjacent(peasant, resource)) { // If we have reached the destination, do the next action in the list
-					curState++;
-				}
 				b = new LocatedAction(peasantId, ActionType.COMPOUNDMOVE, resource.getXPosition(), resource.getYPosition());
+				System.out.println("Moving to resource " + resource.getXPosition() + ", " + resource.getYPosition());
 				builder.put(peasantId, b);
 			} else {
-				if (isAdjacent(peasant, townhalls.get(0))) { // If we have reached the destination, do the next action in the list
-					curState++;
-				}
 				b = new LocatedAction(peasantId, ActionType.COMPOUNDMOVE, townhalls.get(0).getXPosition(), townhalls.get(0).getYPosition());
 				builder.put(peasantId, b);
 			}
@@ -147,7 +159,6 @@ public class PlannerAgent extends Agent {
 			}
 			b = new TargetedAction(peasantId, ActionType.COMPOUNDGATHER, resource.getID());
 			builder.put(peasantId, b);
-			curState++;
 			break;
 		case "Deposit1":
 			// Deposit the held resource (peasant should be next to the town hall already)
@@ -155,21 +166,68 @@ public class PlannerAgent extends Agent {
 			peasantId = action.getConstants().get(0).getValue();
 			b = new TargetedAction(peasantId, ActionType.COMPOUNDDEPOSIT, townhalls.get(0).getID());
 			builder.put(peasantId, b);
-			curState++;
 			break;
 		}
 
         return builder;
     }
 	
+	/**
+	 * Checks to see if the current action on the list has been completed. If so, advances to the next action
+	 * @param newState
+	 * @param townhall
+	 * @return the current action, or the next action, if the current action has been completed.
+	 */
+	private State getNextAction(StateView newState, UnitView townhall) {
+		State state = plan.get(curState);
+		PlanAction action = state.getFromParent();
+		int peasantId = 0;
+		int location = 0;
+		UnitView peasant = null;
+		ResourceView resource = null;
+		switch (action.getName()) {
+		case "Move1":
+			peasantId = action.getConstants().get(0).getValue();
+			location = action.getConstants().get(2).getValue();
+			peasant = newState.getUnit(peasantId);
+			resource = findClosestResource(peasant, location, newState);
+			if (resource != null) {
+				if (isAdjacent(peasant, resource)) { // If we have reached the destination, do the next action in the list
+					curState++;
+				}
+			} else {
+				if (isAdjacent(peasant, townhall)) { // If we have reached the destination, do the next action in the list
+					curState++;
+				}
+			}
+			break;
+		case "Harvest1":
+			peasantId = action.getConstants().get(0).getValue();
+			peasant = newState.getUnit(peasantId);
+			if (peasant.getCargoAmount() > 0) {
+				curState++;
+			}
+			break;
+		case "Deposit1":
+			peasantId = action.getConstants().get(0).getValue();
+			peasant = newState.getUnit(peasantId);
+			if (peasant.getCargoAmount() == 0) {
+				curState++;
+			}
+			break;
+		}
+		
+		return curState == plan.size() ? null : plan.get(curState);
+	}
+
 	private boolean isAdjacent(UnitView peasant, UnitView unitView) {
-		return (Math.abs(peasant.getXPosition() - unitView.getXPosition()) <= 2
-				&& Math.abs(peasant.getYPosition() - unitView.getYPosition()) <= 2);
+		return (Math.abs(peasant.getXPosition() - unitView.getXPosition()) <= 1
+				&& Math.abs(peasant.getYPosition() - unitView.getYPosition()) <= 1);
 	}
 
 	private boolean isAdjacent(UnitView peasant, ResourceView resource) {
-		return (Math.abs(peasant.getXPosition() - resource.getXPosition()) <= 2
-				&& Math.abs(peasant.getYPosition() - resource.getYPosition()) <= 2);
+		return (Math.abs(peasant.getXPosition() - resource.getXPosition()) <= 1
+				&& Math.abs(peasant.getYPosition() - resource.getYPosition()) <= 1);
 	}
 
 	private void printStateAction(State state) {
