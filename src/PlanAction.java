@@ -241,4 +241,16 @@ public class PlanAction {
     	
     	return true;
 	}
+
+    @Override
+    public String toString() {
+        String str = name + "(";
+        for (int i = 0; i < variables.size(); i++) {
+            str = str + variables.get(i);
+            if (i < variables.size() - 1) {
+                str = str + ", ";
+            }
+        }
+        return str + ")";
+    }
 }
