@@ -33,16 +33,15 @@ public class Planner {
 	private List<State> getPathToGoal(Condition goalCondition, State currentState) {
         // Find a goal state.
         List<State> states = new ArrayList<>();
-        states.add(currentState);
-        State current = states.get(0);
-		while (!current.isGoalState(goalCondition)) {
+        State current = currentState;
+        do {
             states.addAll(getNextStates(current));
-            states.remove(current);
             
             // A* is being performed here, since the State.compareTo() is comparing states based on their heuristic values
             Collections.sort(states);
             current = states.get(0);
-		}
+            states.remove(current);
+		} while (!current.isGoalState(goalCondition) && !states.isEmpty());
 
         // Generate the list from the found state.
         List<State> path = new ArrayList<>();

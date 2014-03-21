@@ -117,7 +117,7 @@ class Value {
         if (name == null) {
             return modifier + value;
         } else {
-            return "[" + modifier + name + ", " + value + "]";
+            return "[" + name + ", " + modifier + value + "]";
         }
     }
 }
