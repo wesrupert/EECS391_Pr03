@@ -357,6 +357,9 @@ public class PlanAction {
 				}
 			}
 			break;
+        case "BuildPeasant":
+            variableCombos.add(new Value[] {});
+            break;
 		default:
 			System.out.println("Unrecognized Action Type: " + name);
 		}
