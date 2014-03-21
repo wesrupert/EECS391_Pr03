@@ -135,7 +135,7 @@ public class PlanAction {
 				preconditions, add, delete);
 	}
 
-    public State use(State state, List<Value> values) {
+    public State use(State state) {
         if (!isApplicableTo(state)) {
             return null;
         }
@@ -157,7 +157,7 @@ public class PlanAction {
             }
         }
 
-        return new State(state, this, values, newconditions);
+        return new State(state, this, constants, newconditions);
     }
 
     public boolean isApplicableTo(State state) {
@@ -250,6 +250,9 @@ public class PlanAction {
 		case "Deposit":
 			for (Value unit : units) {
 				for (Value type : types) {
+					if (type.equals(Condition.NOTHING)) {
+						continue;
+					}
 					variableCombos.add(new Value[]{new Value(unit), new Value(type)});
 				}
 				

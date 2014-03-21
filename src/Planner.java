@@ -29,8 +29,22 @@ public class Planner {
 
 	private List<State> getPathToGoal(Condition goalCondition, List<State> currentPlan) {
 		State currentState = currentPlan.get(currentPlan.size() - 1);
-		List<PlanAction> possibleActions = generatePossibleActions(currentState);
+		boolean foundGoal = false;
+		while (!foundGoal) {
+			getNextStates(currentState);
+		}
+		
+		
 		return null;
+	}
+	
+	private List<State> getNextStates(State currentState) {
+		List<PlanAction> possibleActions = generatePossibleActions(currentState);
+		List<State> nextStates = new ArrayList<>();
+		for (PlanAction action : possibleActions) {
+			nextStates.add(action.use(currentState));
+		}
+		return nextStates;
 	}
 	
     public List<PlanAction> generatePossibleActions(State state) {

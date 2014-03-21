@@ -8,7 +8,7 @@ class Pair {
 		this.varset = varset;
 	}
 
-	public Action getAction() {
+	public PlanAction getAction() {
 		return action;
 	}
 
