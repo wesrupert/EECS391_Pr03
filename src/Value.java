@@ -82,6 +82,7 @@ class Value {
         return this.value - v.value;
     }
 
+    @Override
     public String toString() {
         String modifier = (type == Type.ADD)      ? "+" :
                           (type == Type.REMOVE)   ? "-" :

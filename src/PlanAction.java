@@ -1,17 +1,18 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 public class PlanAction {
     private String name;
-    private Set<String> variables;
+    private List<String> variables;
     private List<Condition> preconditions;
     private List<Condition> add;
     private List<Condition> delete;
+    private List<Value> constants;
+    private boolean isAppliedAction;
 
-    public PlanAction(String name, Set<String> variables, List<Condition> preconditions, List<Condition> add, List<Condition> delete) {
+    public PlanAction(String name, List<String> variables, List<Condition> preconditions, List<Condition> add, List<Condition> delete) {
         this.name = name;
         this.variables = variables;
         this.preconditions = preconditions;
@@ -19,6 +20,24 @@ public class PlanAction {
         this.delete = delete;
     }
     
+	public PlanAction(String name, Value[] variables,
+			List<Condition> preconditions, List<Condition> add,
+			List<Condition> delete) {
+		this.name = name;
+        this.preconditions = preconditions;
+        this.add = add;
+        this.delete = delete;
+        this.isAppliedAction = true;
+        
+        List<String> names = new ArrayList<>();
+        for (Value variable : variables) {
+        	names.add(variable.getName());
+        }
+        
+        this.variables = names;
+        this.constants = Arrays.asList(variables);
+	}
+
 	public static List<PlanAction> getActions(int scenario) {
     	List<PlanAction> actions = new ArrayList<PlanAction>();
     	
@@ -29,13 +48,14 @@ public class PlanAction {
 			
 			actions.add(getMoveAction());
 			actions.add(getHarvestAction());
+			actions.add(getDepositAction());
+			break;
 		case 3:
 		case 4:
 			// Multiple peasant actions
-			
-		default:
-			return actions;
+			break;
 		}
+		return actions;
 	}
 
     // Move(id, from, to):
@@ -57,7 +77,7 @@ public class PlanAction {
 		delete.add(new Condition("At", new Value[] {new Value("id"), new Value("from")}));
 		
 		// Move action is Move(id, from, to)
-		return new PlanAction("Move", new HashSet<String>(Arrays.asList(new String[] {"id", "from", "to"})),
+		return new PlanAction("Move", Arrays.asList(new String[] {"id", "from", "to"}),
 				preconditions, add, delete);
 	}
 	
@@ -84,7 +104,7 @@ public class PlanAction {
 		delete.add(new Condition("Holding", new Value[] {new Value("id"), new Value(Condition.NOTHING)}));
 		
 		// Harvest action is Harvest(id, pos, type)
-		return new PlanAction("Harvest", new HashSet<String>(Arrays.asList(new String[] {"id", "pos", "type"})),
+		return new PlanAction("Harvest", Arrays.asList(new String[] {"id", "pos", "type"}),
 				preconditions, add, delete);
 	}
 	
@@ -111,39 +131,41 @@ public class PlanAction {
 		delete.add(new Condition("Holding", new Value[] {new Value("id"), new Value("type")}));
 		
 		// Deposit action is Deposit(id, type)
-		return new PlanAction("Deposit", new HashSet<String>(Arrays.asList(new String[] {"id", "type"})),
+		return new PlanAction("Deposit", Arrays.asList(new String[] {"id", "type"}),
 				preconditions, add, delete);
 	}
 
     public State use(State state, List<Value> values) {
-        if (!isApplicableTo(state, values)) {
+        if (!isApplicableTo(state)) {
             return null;
         }
         List<Condition> newconditions = new ArrayList<>(state.getState());
 
         // Add the new state conditions.
         for (Condition c : add) {
-            Condition applied = new Condition(c, values);
-            if (!newconditions.contains(applied)) {
-            	newconditions.add(applied);
+//            Condition applied = new Condition(c, values);
+            if (!newconditions.contains(c)) {
+            	newconditions.add(c);
             }
         }
 
         // Remove the old state conditions.
         for (Condition c : delete) {
-            Condition applied = new Condition(c, values);
-            if (newconditions.contains(applied)) {
-                newconditions.remove(applied);
+//            Condition applied = new Condition(c, values);
+            if (newconditions.contains(c)) {
+                newconditions.remove(c);
             }
         }
 
         return new State(state, this, values, newconditions);
     }
 
-    public boolean isApplicableTo(State state, List<Value> values) {
+    public boolean isApplicableTo(State state) {
+    	if (!isAppliedAction) {
+    		return false;
+    	}
         for (Condition c : preconditions) {
-            Condition applied = new Condition(c, values);
-            if (!state.getState().contains(applied)) {
+            if (!state.getState().contains(c)) {
                 return false;
             }
         }
@@ -154,7 +176,7 @@ public class PlanAction {
         return this.name;
     }
     
-    public Set<String> getVariables() {
+    public List<String> getVariables() {
     	return this.variables;
     }
 
@@ -169,4 +191,80 @@ public class PlanAction {
     public List<Condition> getDelete() {
         return this.delete;
     }
+    
+    public boolean isAppliedAction() {
+    	return isAppliedAction;
+    }
+    
+    public PlanAction initializeAction(Value[] constants) {
+    	if (constants.length != this.variables.size()) {
+    		System.out.println("Can't initialize Action! Given constants don't match the number of variables!");
+    	}
+    	
+    	for (int i = 0; i < constants.length; i++) {
+    		constants[i].setName(this.variables.get(i));
+    	}
+    	
+    	List<Condition> newPreconditions = insertConstantsIntoConditions(preconditions, constants);
+    	List<Condition> newAdd = insertConstantsIntoConditions(add, constants);
+    	List<Condition> newDelete = insertConstantsIntoConditions(delete, constants);
+    	return new PlanAction(name, constants, newPreconditions, newAdd, newDelete);
+    }
+
+	private List<Condition> insertConstantsIntoConditions(List<Condition> conditions, Value[] constants) {
+		List<Condition> newConditions = new LinkedList<>();
+		
+		for (Condition condition : conditions) {
+			newConditions.add(new Condition(condition, Arrays.asList(constants)));
+			
+		}
+		
+		return newConditions;
+	}
+
+	public List<PlanAction> getPossibleActions(List<Value> units, List<Value> positions, List<Value> types) {
+		List<Value[]> variableCombos = new ArrayList<>();
+		
+		switch (name) {
+		case "Move":
+			for (Value unit : units) {
+				for (Value position1 : positions) {
+					for (Value position2 : positions) {
+						if (position1.equals(position2)) {
+							continue;
+						}
+						variableCombos.add(new Value[]{new Value(unit), new Value(position1), new Value(position2)});
+					}
+				}
+			}
+			break;
+		case "Harvest":
+			for (Value unit : units) {
+				for (Value position : positions) {
+					for (Value type : types) {
+						variableCombos.add(new Value[]{new Value(unit), new Value(position), new Value(type)});
+					}
+				}
+			}
+			break;
+		case "Deposit":
+			for (Value unit : units) {
+				for (Value type : types) {
+					variableCombos.add(new Value[]{new Value(unit), new Value(type)});
+				}
+				
+			}
+			break;
+		default:
+				System.out.println("Unrecognized Action Type!!");
+		}
+		
+		List<PlanAction> possibleActions = new ArrayList<>();
+		
+		for (Value[] combo : variableCombos) {
+			possibleActions.add(initializeAction(combo));
+		}
+		
+		return possibleActions;
+	}
 }
