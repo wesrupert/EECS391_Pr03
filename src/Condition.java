@@ -5,7 +5,7 @@ import java.util.Set;
 public class Condition {
     public static final Condition HOLDING  = new Condition("Holding",  new Value[] { new Value("first"), new Value("type") });
     public static final Condition AT       = new Condition("At",       new Value[] { new Value("first"), new Value("pos") });
-    public static final Condition HAS      = new Condition("Has",      new Value[] { new Value("type"), new Value("amt", Value.Type.ADD) });
+    public static final Condition HAS      = new Condition("Has",      new Value[] { new Value("type"), new Value("amt", 0, Value.Type.ADD) });
     public static final Condition CONTAINS = new Condition("Contains", new Value[] { new Value("pos"), new Value("type") });
     
     public static final Value NOTHING  = new Value("type", 10, Value.Type.CONSTANT);
@@ -28,7 +28,7 @@ public class Condition {
 
     public Condition(Condition other, List<Value> values) {
         this.name = other.name;
-        this.variables = new ArrayList<>(other.variables);
+        this.variables = new ArrayList<>();
         for (int i = 0; i < other.variables.size(); i++) {
             Value value = new Value(other.variables.get(i));
             for (Value val : values) {
@@ -37,6 +37,7 @@ public class Condition {
                     break;
                 }
             }
+            this.variables.add(value);
         }
     }
 

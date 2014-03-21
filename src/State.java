@@ -78,7 +78,7 @@ public class State implements Comparable<State> {
         		numAt++;
         	}
         }
-        weight += (weight / 100) * numAt;
+        weight -= (weight / 100) * numAt;
 
         return weight;
     }
