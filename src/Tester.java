@@ -11,6 +11,8 @@ public class Tester {
         
         Planner planner = new Planner(actions, startState, goalState);
         List<State> plan = planner.createPlan();
+        
+        Planner.printPlan(plan, System.out);
 	}
 
 }

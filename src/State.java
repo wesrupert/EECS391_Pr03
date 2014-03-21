@@ -47,6 +47,10 @@ public class State implements Comparable<State> {
     public List<Condition> getState() {
         return this.state;
     }
+    
+    public int getDepth() {
+    	return depth;
+    }
 
     public int getHeuristicWeight() {
     	if (!weightSet) {

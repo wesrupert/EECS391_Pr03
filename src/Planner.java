@@ -1,3 +1,4 @@
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -121,17 +122,21 @@ public class Planner {
         
         return validActions;
     }
-    
-//    private List<Pair<PlanAction, List<Value>>> getActions(State state, PossibleConditions p) {
-//    	List<Pair<PlanAction, List<Value>>> actions = new ArrayList<>();
-//    	for (List<Value> varset : p.getStates()) {
-//    		for (PlanAction action : availableActions) {
-//    			if (action.isApplicableTo(state, varset)) {
-//    				actions.add(new Pair(action, varset));
-//    			}
-//    		}
-//    	}
-//    	return actions;
-//    }
+
+	public static void printPlan(List<State> plan, PrintStream writer) {
+		System.out.println("PRINTING PLAN");
+		for (State state : plan) {
+			writer.print("Step " + state.getDepth() + " - ");
+			writer.print("Action: " + state.getFromParent().getName() + " (");
+			for (Value val : state.getFromParent().getConstants()) {
+				writer.print(val.getConstantAsString());
+				if (state.getFromParent().getConstants().indexOf(val) != state.getFromParent().getConstants().size() - 1) {
+					writer.print(", ");
+				}
+			}
+			writer.println(")");
+		}
+		
+	}
 
 }
