@@ -38,17 +38,22 @@ public class PlanAction {
 		}
 	}
 
+    // Move(id, from, to):
+    //     P: At(id, from)
+    //     A: At(id, to)
+    //     D: At(id, from)
 	private static PlanAction getMoveAction() {
+        List<Condition> preconditions = new ArrayList<>();
+        List<Condition> add = new ArrayList<>();
+        List<Condition> delete = new ArrayList<>();
+        
 		// Add the precondition At(id, from)
-		List<Condition> preconditions = new ArrayList<>();
 		preconditions.add(new Condition("At", new Value[] {new Value("id"), new Value("from")}));
 
 		// Add At(id, to) to the Add list
-		List<Condition> add = new ArrayList<>();
 		add.add(new Condition("At", new Value[] {new Value("id"), new Value("to")}));
 		
 		// Add At(id, from) to the delete list
-		List<Condition> delete = new ArrayList<>();
 		delete.add(new Condition("At", new Value[] {new Value("id"), new Value("from")}));
 		
 		// Move action is Move(id, from, to)
@@ -56,23 +61,26 @@ public class PlanAction {
 				preconditions, add, delete);
 	}
 	
+    // Harvest(id, pos, type):
+    //     P: Holding(id, NOTHING), At(id, pos), Contains(pos, type)
+    //     A: Holding(id, type)
+    //     D: Holding(id, NOTHING)
 	private static PlanAction getHarvestAction() {
+        List<Condition> preconditions = new ArrayList<>();
+        List<Condition> add = new ArrayList<>();
+        List<Condition> delete = new ArrayList<>();
+        
 		// Add the precondition Holding(id, Nothing)
-		List<Condition> preconditions = new ArrayList<>();
 		preconditions.add(new Condition("Holding", new Value[] {new Value("id"), new Value(Condition.NOTHING)}));
-		
 		// Add the precondition At(id, pos)
 		preconditions.add(new Condition("At", new Value[] {new Value("id"), new Value("pos")}));
-		
 		// Add the precondition Contains(pos, type)
 		preconditions.add(new Condition("Contains", new Value[] {new Value("pos"), new Value("type")}));
 		
 		// Add Holding(id, type) to the Add list
-		List<Condition> add = new ArrayList<>();
 		add.add(new Condition("Holding", new Value[] {new Value("id"), new Value("type")}));
 		
 		// Add Holding(id, Nothing) to the delete list
-		List<Condition> delete = new ArrayList<>();
 		delete.add(new Condition("Holding", new Value[] {new Value("id"), new Value(Condition.NOTHING)}));
 		
 		// Harvest action is Harvest(id, pos, type)
@@ -80,23 +88,26 @@ public class PlanAction {
 				preconditions, add, delete);
 	}
 	
+    // Deposit(id, type):
+    //     P: Holding(id, type), At(id, TOWNHALL)
+    //     A: Holding(id, NOTHING), Has(type, +amt)
+    //     D: Holding(id, type)
 	private static PlanAction getDepositAction() {
+        List<Condition> preconditions = new ArrayList<>();
+        List<Condition> add = new ArrayList<>();
+        List<Condition> delete = new ArrayList<>();
+
 		// Add the precondition Holding(id, type)
-		List<Condition> preconditions = new ArrayList<>();
 		preconditions.add(new Condition("Holding", new Value[] {new Value("id"), new Value("type")}));
-		
 		// Add the precondition At(id, Townhall)
-		preconditions.add(new Condition("At", new Value[] {new Value("id"), new Value(Condition.TOWNHALL)}));
+		preconditions.add(new Condition("At", new ValPue[] {new Value("id"), new Value(Condition.TOWNHALL)}));
 
 		// Add Holding(id, Nothing) to the Add list
-		List<Condition> add = new ArrayList<>();
 		add.add(new Condition("Holding", new Value[] {new Value("id"), new Value(Condition.NOTHING)}));
-		
 		// Add +Has(type, amt) to the Add list
 		add.add(new Condition("Has", new Value[] {new Value("type"), new Value("amt", Value.Type.ADD)}));
 		
 		// Add Holding(id, type) to the delete list
-		List<Condition> delete = new ArrayList<>();
 		delete.add(new Condition("Holding", new Value[] {new Value("id"), new Value("type")}));
 		
 		// Deposit action is Deposit(id, type)
