@@ -28,7 +28,7 @@ public class Condition {
 
     public Condition(Condition other, List<Value> values) {
         this.name = other.name;
-        this.variables = new ArrayList<>(/*other.variables*/);
+        this.variables = new ArrayList<>(other.variables);
         for (int i = 0; i < other.variables.size(); i++) {
             Value value = new Value(other.variables.get(i));
             for (Value val : values) {
@@ -37,7 +37,6 @@ public class Condition {
                     break;
                 }
             }
-            this.variables.add(value);
         }
     }
 

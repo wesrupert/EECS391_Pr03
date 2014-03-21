@@ -7,12 +7,14 @@ public class State implements Comparable<State> {
     public static int WoodValue;
 
     private State parent;
+    private int depth;
     private PlanAction fromParent;
     private List<Value> valuesFromParent;
     private List<Condition> state;
 
     public State(List<Condition> initialState) {
         this.parent = null;
+        this.depth = 0;
         this.fromParent = null;
         this.valuesFromParent = null;
         this.state = initialState;
@@ -20,6 +22,7 @@ public class State implements Comparable<State> {
 
     public State(State parent, PlanAction action, List<Value> values, List<Condition> state) {
         this.parent = parent;
+        this.depth = parent.depth + 1;
         this.fromParent = action;
         this.valuesFromParent = values;
         this.state = state;
@@ -42,12 +45,16 @@ public class State implements Comparable<State> {
     }
 
     public int getHeuristicWeight() {
-    	return this.getHeuristicWeight(true) + this.getHeuristicWeight(false);
+    	return 2 * -400 // TODO: Change the 2 to a peasant count
+    		+ this.getHeuristicWeight(true)
+    		+ this.getHeuristicWeight(false)
+    		+ depth * 100;
     }
 
     private int getHeuristicWeight(boolean isGold) {
         int weight = isGold ? GoldValue : WoodValue;
         Value type = isGold ? Condition.GOLD : Condition.WOOD;
+        int id = isGold ? 14 : 15;
 
         for (Condition c : state) {
             if (c.getName().equals("Has") && c.getValue("type").equals(type)) {
@@ -61,6 +68,17 @@ public class State implements Comparable<State> {
                 }
             }
         }
+
+        // Get weight determined by proximity.
+        int numAt = 0;
+        for (Condition c : state) {
+        	if (c.getName().equals("At") &&
+        		c.getValue("pos") != null &&
+        		c.getValue("pos").getValue() == id) {
+        		numAt++;
+        	}
+        }
+        weight += (weight / 100) * numAt;
 
         return weight;
     }
