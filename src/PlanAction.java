@@ -69,13 +69,19 @@ public class PlanAction {
 			return null;
 		}
 		List<Condition> newconditions = new ArrayList<>(state.getState());
-
+		
+		int numPeasants = state.getNumPeasants();
+		if (this.name.equalsIgnoreCase("BuildPeasant")) {
+			numPeasants++;
+		}
+		
 		// Add the new state conditions.
 		for (Condition c : add) {
 			// Condition applied = new Condition(c, values);
 			if (c.getValue("amt") != null) { // we need to increment the current
 												// value of a resource in the
 												// state list
+				
 				for (Condition con : newconditions) {
 					if ((con.getName().equalsIgnoreCase("Has") && c.getName().equalsIgnoreCase("Has") // If condition deals with resources
 							&& con.getValue("type").getValue() == c.getValue("type").getValue()) // match their types
@@ -89,7 +95,29 @@ public class PlanAction {
 					}
 				}
 			} else if (!newconditions.contains(c)) {
-				newconditions.add(c);
+				if (this.name.equalsIgnoreCase("BuildPeasant")) { //need to change the peasant id
+					String name = "";
+					switch (numPeasants) {
+					case 2:
+						name = "second";
+						break;
+					case 3:
+						name = "third";
+						break;
+					default:
+						System.out.println("Something bad happening when applying BuildPeasant action");
+					}
+					
+					if (c.getName().equalsIgnoreCase("Holding")) {
+						Condition newCondition = new Condition("Holding", new Value[] { new Value(name, numPeasants), new Value(Condition.NOTHING)});
+						newconditions.add(newCondition);
+					} else if (c.getName().equalsIgnoreCase("At")) {
+						Condition newCondition = new Condition("At", new Value[] { new Value(name, numPeasants), new Value(Condition.TOWNHALL)});
+						newconditions.add(newCondition);
+					}
+				} else {
+					newconditions.add(c);
+				}
 			}
 		}
 
@@ -101,7 +129,7 @@ public class PlanAction {
 			}
 		}
 
-		return new State(state, this, constants, newconditions);
+		return new State(state, this, constants, newconditions, numPeasants);
 	}
 
 	public boolean isApplicableTo(State state) {
@@ -109,11 +137,18 @@ public class PlanAction {
 			return false;
 		}
 		for (Condition c : preconditions) {
-			if (!state.getState().contains(c) || badMove(state)) {
+			if (!state.getState().contains(c) || badMove(state) || tooManyPeasants(state)) {
 				return false;
 			}
 		}
 		return true;
+	}
+
+	private boolean tooManyPeasants(State state) {
+		if (!name.startsWith("BuildPeasant")) {
+			return false;
+		}
+		return state.getNumPeasants() > 3;
 	}
 
 	private boolean badMove(State state) {

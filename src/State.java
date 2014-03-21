@@ -14,6 +14,7 @@ public class State implements Comparable<State> {
     private PlanAction fromParent;
     private List<Value> valuesFromParent;
     private List<Condition> state;
+    private int numPeasants = 1;
 
     public State(List<Condition> initialState) {
         this.parent = null;
@@ -24,12 +25,13 @@ public class State implements Comparable<State> {
         this.state = initialState;
     }
 
-    public State(State parent, PlanAction action, List<Value> values, List<Condition> state) {
+    public State(State parent, PlanAction action, List<Value> values, List<Condition> state, int numPeasants) {
         this.parent = parent;
         this.depth = parent.depth + 1;
         this.fromParent = action;
         this.valuesFromParent = values;
         this.state = state;
+        this.numPeasants = numPeasants;
     }
 
     public State getParent() {
@@ -51,6 +53,14 @@ public class State implements Comparable<State> {
     public int getDepth() {
     	return depth;
     }
+    
+    public int getNumPeasants() {
+    	return numPeasants;
+    }
+    
+    public void incrementNumPeasants() {
+    	numPeasants++;
+    }
 
     public int getHeuristicWeight() {
     	if (!weightSet) {
@@ -61,7 +71,7 @@ public class State implements Comparable<State> {
     }
 
     private int heuristicWeight() {
-    	return numPeasants() * -400
+    	return numPeasants() * -10000
     		+ this.getHeuristicWeight(true)
     		+ this.getHeuristicWeight(false)
     		+ depth * 50;

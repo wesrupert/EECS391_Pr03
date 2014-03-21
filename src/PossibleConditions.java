@@ -198,9 +198,12 @@ class PossibleConditions {
         List<Condition> add = new ArrayList<>();
         List<Condition> delete = new ArrayList<>();
 
+        // TODO need to somehow limit the number of peasants to 3
         preconditions.add(new Condition("Has", new Value[] { new Value(Condition.GOLD), new Value("amt", 400)}));
         add.add(new Condition("Has", new Value[] { new Value(Condition.GOLD), new Value("amt", 400, Value.Type.REMOVE) }));
         add.add(new Condition("Numpeas", new Value[] { new Value("amt", 1, Value.Type.ADD) }));
+        add.add(new Condition("Holding", new Value[] { new Value("id", 99), new Value(Condition.NOTHING)}));
+        add.add(new Condition("At", new Value[] { new Value("id", 99), new Value(Condition.TOWNHALL)}));
 
         // BuildPeasant action is BuildPeasant()
         return new PlanAction("BuildPeasant", new ArrayList<String>(), preconditions, add, delete);
