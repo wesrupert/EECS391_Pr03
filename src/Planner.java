@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class Planner {
             states.remove(current);
             
             // A* is being performed here, since the State.compareTo() is comparing states based on their heuristic values
-            Collections.sort(states);
+            //Collections.sort(states);
             current = states.get(0);
 		}
 
