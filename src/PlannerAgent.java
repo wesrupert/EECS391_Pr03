@@ -32,6 +32,8 @@ import edu.cwru.sepia.action.LocatedAction;
 import edu.cwru.sepia.action.TargetedAction;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.environment.model.history.History;
+import edu.cwru.sepia.environment.model.state.ResourceNode.ResourceView;
+import edu.cwru.sepia.environment.model.state.ResourceNode.Type;
 import edu.cwru.sepia.environment.model.state.State.StateView;
 import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 
@@ -84,22 +86,16 @@ public class PlannerAgent extends Agent {
         Map<Integer,edu.cwru.sepia.action.Action> builder = new HashMap<Integer,edu.cwru.sepia.action.Action>();
         
         List<Integer> allUnitIds = newState.getAllUnitIds();
-		List<Integer> peasantIds = new ArrayList<Integer>();
-		List<Integer> townhallIds = new ArrayList<Integer>();
-		List<Integer> goldmineIds = new ArrayList<Integer>();
-		List<Integer> forestIds = new ArrayList<Integer>();
+		List<UnitView> peasants = new ArrayList<>();
+		List<UnitView> townhalls = new ArrayList<>();
 		for(int i=0; i<allUnitIds.size(); i++) {
 			int id = allUnitIds.get(i);
 			UnitView unit = newState.getUnit(id);
 			String unitTypeName = unit.getTemplateView().getName();
 			if(unitTypeName.equals("TownHall"))
-				townhallIds.add(id);
+				townhalls.add(unit);
 			if(unitTypeName.equals("Peasant"))
-				peasantIds.add(id);
-			if(unitTypeName.equals("Goldmine"))
-				peasantIds.add(id);
-			if(unitTypeName.equals("Forest"))
-				peasantIds.add(id);
+				peasants.add(unit);
 		}
 		
 		Action b = null;
@@ -107,30 +103,74 @@ public class PlannerAgent extends Agent {
 		
 		// TODO make sure that the state list doesn't contain the first state
 		PlanAction action = state.getFromParent();
+		int peasantId = 0;
+		int location = 0;
+		UnitView peasant = null;
+		ResourceView resource = null;
 		switch (action.getName()) {
 		case "Move":
 			//Move from peasent id to location
-			int peasantId = action.getConstants().get(0).getValue();
-			UnitView peasent = newState.getUnit(peasantId);
-			int[] coords = findClosest();
-			b = new LocatedAction(peasantId, ActionType.COMPOUNDMOVE, x, y)
+			peasantId = action.getConstants().get(0).getValue();
+			location = action.getConstants().get(2).getValue();
+			peasant = newState.getUnit(peasantId);
+			resource = findClosest(peasant, location, newState);
+			if (resource != null) {
+				b = new LocatedAction(peasantId, ActionType.COMPOUNDMOVE, resource.getXPosition(), resource.getYPosition());
+				builder.put(peasantId, b);
+			} else {
+				b = new LocatedAction(peasantId, ActionType.COMPOUNDMOVE, townhalls.get(0).getXPosition(), townhalls.get(0).getYPosition());
+				builder.put(peasantId, b);
+			}
 			break;
 		case "Harvest":
+			peasantId = action.getConstants().get(0).getValue();
+			location = action.getConstants().get(1).getValue();
+			peasant = newState.getUnit(peasantId);
+			resource = findClosest(peasant, location, newState);
+			if (resource == null) {
+				System.out.println("Issue with finding closest resource");
+			}
+			b = new TargetedAction(peasantId, ActionType.COMPOUNDGATHER, resource.getID());
+			builder.put(peasantId, b);
 			break;
 		case "Deposit":
+			peasantId = action.getConstants().get(0).getValue();
+			b = new TargetedAction(peasantId, ActionType.COMPOUNDDEPOSIT, townhalls.get(0).getID());
+			builder.put(peasantId, b);
 			break;
 		}
-//		b = new TargetedAction(peasantId, ActionType.COMPOUNDDEPOSIT, townhallId);
-//		
-//		List<Integer> resourceIds = currentState.getResourceNodeIds(Type.TREE);
-//		b = new TargetedAction(peasantId, ActionType.COMPOUNDGATHER, resourceIds.get(0));
-//
-//		builder.put(peasantId, b);
-//        
+
         return builder;
     }
 
-    @Override
+    private ResourceView findClosest(UnitView peasant, int location, StateView currentState) {
+    	List<ResourceView> resources = null;
+		if (location == Condition.TOWNHALL.getValue()) {
+			return null;
+		} else if (location == Condition.GOLDMINE.getValue()) {
+			resources = currentState.getResourceNodes(Type.GOLD_MINE);
+		} else if (location == Condition.FOREST.getValue()) {
+			resources = currentState.getResourceNodes(Type.TREE);
+		} else {
+			System.out.println("Something went wrong when finding closest resource");
+		}
+		
+		double shortestDist = Double.MAX_VALUE;
+		ResourceView closestResource = null;
+		for (ResourceView resource : resources) {
+			double dist = Math.sqrt(
+					(peasant.getXPosition() * peasant.getXPosition()) - (resource.getXPosition() * resource.getXPosition()) +
+					(peasant.getYPosition() * peasant.getYPosition()) - (resource.getYPosition() * resource.getYPosition()));
+			if (dist < shortestDist) {
+				shortestDist = dist;
+				closestResource = resource;
+			}
+		}
+		
+		return closestResource;
+	}
+
+	@Override
     public void terminalStep(StateView newstate, History.HistoryView statehistory) {
         step++;
     }

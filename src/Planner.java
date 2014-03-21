@@ -1,8 +1,8 @@
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.List;
 
 
 public class Planner {
@@ -34,7 +34,7 @@ public class Planner {
         SortedSet<State> states = new TreeSet<>();
         states.add(currentState);
         State current = states.first();
-		while (!current.isGoalState()) {
+		while (!current.isGoalState(goalCondition)) {
             states.addAll(getNextStates(current));
             current = states.first();
 		}
