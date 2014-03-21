@@ -36,6 +36,8 @@ public class Planner {
 		while (!current.isGoalState(goalCondition)) {
             states.addAll(getNextStates(current));
             states.remove(current);
+            
+            // A* is being performed here, since the State.compareTo() is comparing states based on their heuristic values
             Collections.sort(states);
             current = states.get(0);
 		}

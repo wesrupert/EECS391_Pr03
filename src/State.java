@@ -203,6 +203,7 @@ public class State implements Comparable<State> {
 		return newState;
 	}
 
+	@Override
 	 public int compareTo(State other) {
 	 	return this.getHeuristicWeight() - other.getHeuristicWeight();
 	 }
