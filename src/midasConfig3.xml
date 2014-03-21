@@ -2,9 +2,8 @@
 	<Map>rc_3m5t.xml</Map>
 	<Player Id="0">
 		<AgentClass>
-			<ClassName>RCAgent</ClassName>
-			<Argument>10000</Argument>
-			<Argument>10000</Argument>
+			<ClassName>PlannerAgent</ClassName>
+			<Argument>3</Argument>
 		</AgentClass>
 	</Player>
 	<Player Id="0">

@@ -85,6 +85,28 @@ class Value {
     public int compareTo(Value v) {
         return this.value - v.value;
     }
+    
+    public String getConstantAsString() {
+    	if (type == Type.CONSTANT || type == Type.EQUALS) {
+    		if (value == Condition.NOTHING.value) {
+    			return "Nothing";
+    		} else if (value == Condition.GOLD.value) {
+    			return "Gold";
+    		} else if (value == Condition.WOOD.value) {
+    			return "Wood";
+    		} else if (value == Condition.TOWNHALL.value) {
+    			return "Townhall";
+    		} else if (value == Condition.GOLDMINE.value) {
+    			return "Goldmine";
+    		} else if (value == Condition.FOREST.value) {
+    			return "Forest";
+    		} else {
+    			return "Peasant" + value;
+    		}
+    	} else {
+    		return String.valueOf(value);
+    	}
+    }
 
     @Override
     public String toString() {

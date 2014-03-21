@@ -77,6 +77,8 @@ public class PlannerAgent extends Agent {
         Planner planner = new Planner(actions, startState, goalState);
         plan = planner.createPlan();
         
+        Planner.printPlan(plan, System.out);
+        
         return middleStep(newstate, statehistory);
     }
 	
