@@ -77,9 +77,9 @@ public class PlanAction {
 												// value of a resource in the
 												// state list
 				for (Condition con : newconditions) {
-					if (con.getName().equalsIgnoreCase("Has")
-							&& con.getValue("type").getValue() == c.getValue(
-									"type").getValue()) {
+					if ((con.getName().equalsIgnoreCase("Has") && c.getName().equalsIgnoreCase("Has") // If condition deals with resources
+							&& con.getValue("type").getValue() == c.getValue("type").getValue()) // match their types
+							|| (con.getName().equalsIgnoreCase("Numpeas")  && c.getName().equalsIgnoreCase("Numpeas"))) { // If condition deals with peas
 						Condition newCondition = new Condition(con,
 								c.getVariables());
 						newconditions.remove(con);

@@ -19,7 +19,7 @@ public class Tester {
 
         // Test multi-peasant scenarios.
 		actions = PlanAction.getActions(4);
-        startState = State.getStartState(2);
+        startState = State.getStartState(0);
         goalState = State.getGoalState(4);
         planner = new Planner(actions, startState, goalState);
         plan = planner.createPlan();
