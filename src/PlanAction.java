@@ -120,7 +120,7 @@ public class PlanAction {
 		// Add the precondition Holding(id, type)
 		preconditions.add(new Condition("Holding", new Value[] {new Value("id"), new Value("type")}));
 		// Add the precondition At(id, Townhall)
-		preconditions.add(new Condition("At", new ValPue[] {new Value("id"), new Value(Condition.TOWNHALL)}));
+		preconditions.add(new Condition("At", new Value[] {new Value("id"), new Value(Condition.TOWNHALL)}));
 
 		// Add Holding(id, Nothing) to the Add list
 		add.add(new Condition("Holding", new Value[] {new Value("id"), new Value(Condition.NOTHING)}));
