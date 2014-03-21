@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class PossibleConditions {
-    private static final String[] idnames = { "first", "second", "third" };
+    public static final String[] idnames = { "first", "second", "third" };
     private int[] ids, locations, types;
     private List<Condition> holding, at, contains;
     private List<List<Value>> states;
@@ -200,8 +200,8 @@ class PossibleConditions {
 
         preconditions.add(new Condition("Has", new Value[] { new Value(Condition.GOLD), new Value("amt", 400)}));
         add.add(new Condition("Has", new Value[] { new Value(Condition.GOLD), new Value("amt", 400, Value.Type.REMOVE) }));
-        add.add(new Condition("Exists", new Value[] { new Value("amt", 1, Value.Type.ADD) }));
-        
+        add.add(new Condition("Numpeas", new Value[] { new Value("amt", 1, Value.Type.ADD) }));
+
         // BuildPeasant action is BuildPeasant()
         return new PlanAction("BuildPeasant", new ArrayList<String>(), preconditions, add, delete);
     }

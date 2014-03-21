@@ -61,7 +61,7 @@ public class State implements Comparable<State> {
     }
 
     private int heuristicWeight() {
-    	return 2 * -400 // TODO: Change the 2 to a peasant count
+    	return numPeasants() * -400
     		+ this.getHeuristicWeight(true)
     		+ this.getHeuristicWeight(false)
     		+ depth * 50;
@@ -97,7 +97,7 @@ public class State implements Comparable<State> {
         		}
         	}
         }
-        weight -= (weight / 100) * numAt;
+        weight -= (weight / 10) * numAt;
 
         return weight;
     }
@@ -137,20 +137,31 @@ public class State implements Comparable<State> {
         return false;
     }
 
+    private int numPeasants() {
+        for (Condition c : state) {
+            if (c.getName().equals("Numpeas")) {
+                return c.getValue(0).getValue();
+            }
+        }
+        return -1;
+    }
+
     public boolean isGoalState(Condition goal) {
     	return state.contains(goal);
     }
 
-	public static State getStartState(int peasantId) {
+	public static State getStartState(int numpeas) {
 		List<Condition> conditions = new ArrayList<>();
 		
-		// Add condition Holding(Peasant1, Nothing)
-		conditions.add(new Condition(Condition.HOLDING, Arrays.asList(
-				new Value[]{new Value("first", peasantId), new Value(Condition.NOTHING)})));
-		
-		// Add condition At(peasent1, Townhall)
-		conditions.add(new Condition(Condition.AT, Arrays.asList(
-				new Value[]{new Value("first", peasantId), new Value(Condition.TOWNHALL)})));
+        for (int i = 0; i < numpeas; i++) {
+    		// Add condition Holding(Peasant_i, Nothing)
+    		conditions.add(new Condition(Condition.HOLDING, Arrays.asList(
+    				new Value[]{new Value(PossibleConditions.idnames[i], i), new Value(Condition.NOTHING)})));
+    		
+    		// Add condition At(Peasant_i, Townhall)
+    		conditions.add(new Condition(Condition.AT, Arrays.asList(
+    				new Value[]{new Value(PossibleConditions.idnames[i], i), new Value(Condition.TOWNHALL)})));
+        }
 		
 		// Add condition Has(wood, 0)
 		conditions.add(new Condition(Condition.HAS, Arrays.asList(
@@ -169,8 +180,12 @@ public class State implements Comparable<State> {
 				new Value[]{new Value(Condition.FOREST), new Value(Condition.WOOD)})));
 		
 		// Add condition Hall(Townhall)
-				conditions.add(new Condition(Condition.HALL, Arrays.asList(
-						new Value[]{new Value(Condition.TOWNHALL)})));
+		conditions.add(new Condition(Condition.HALL, Arrays.asList(
+				new Value[]{new Value(Condition.TOWNHALL)})));
+
+        // Add condition Numpeas(numpeas)
+        conditions.add(new Condition(Condition.NUMPEAS, Arrays.asList(
+                new Value[] { new Value("amt", numpeas, Value.Type.ADD) })));
 				
 		State newState = new State(conditions);
 		newState.GoldValue = 0;
