@@ -85,6 +85,10 @@ public class Condition {
         return null;
     }
 
+    public Value getValue(int index) {
+        return variables.get(index);
+    }
+
     public boolean usesOnly(Set<String> variables) {
         for (Value var : this.variables) {
             if (!variables.contains(var.getName())) {

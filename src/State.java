@@ -101,8 +101,8 @@ public class State implements Comparable<State> {
     	int type = isGold ? 11 : 12;
     	for (Condition c : state) {
     		if (c.getName().equals("Holding") &&
-    			c.getValue("first").getValue() == id &&
-    			c.getValue("type").getValue() == type) {
+    			c.getValue(0).getValue() == id &&
+    			c.getValue(1).getValue() == type) {
     			return true;
     		}
     	}
@@ -113,8 +113,8 @@ public class State implements Comparable<State> {
         int type = isGold ? 14 : 15;
         for (Condition c : state) {
         	if (c.getName().equals("At") &&
-        		c.getValue("first").getValue() == id &&
-        		c.getValue("pos").getValue() == type) {
+        		c.getValue(0).getValue() == id &&
+        		c.getValue(1).getValue() == type) {
         		return true;
         	}
         }
@@ -124,8 +124,8 @@ public class State implements Comparable<State> {
     private boolean isAtTH(int id) {
         for (Condition c : state) {
         	if (c.getName().equals("At") &&
-        		c.getValue("first").getValue() == id &&
-        		c.getValue("pos").getValue() == 13) {
+        		c.getValue(0).getValue() == id &&
+        		c.getValue(1).getValue() == 13) {
         		return true;
         	}
         }
