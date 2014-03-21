@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -15,7 +15,7 @@ public class Planner {
 	}
 	
 	public List<State> createPlan() {
-		List<State> plan = new LinkedList<>();
+		List<State> plan = new ArrayList<>();
 		plan.add(startState);
 		
 		for (Condition goalCondition : goalState.getState()) {
@@ -23,7 +23,8 @@ public class Planner {
 			State.isGold = goalCondition.getValue("type").getValue() == Condition.GOLD.getValue();
 			
 			List<State> goalPath = getPathToGoal(goalCondition, plan.get(plan.size() - 1));
-			plan.addAll(goalPath);
+//			plan.addAll(goalPath);
+			plan = new ArrayList<>(goalPath);
 		}
 		
 		return plan;
@@ -39,7 +40,7 @@ public class Planner {
             states.remove(current);
             
             // A* is being performed here, since the State.compareTo() is comparing states based on their heuristic values
-            //Collections.sort(states);
+            Collections.sort(states);
             current = states.get(0);
 		}
 

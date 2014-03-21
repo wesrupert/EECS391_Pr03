@@ -73,7 +73,17 @@ public class PlanAction {
         // Add the new state conditions.
         for (Condition c : add) {
 //            Condition applied = new Condition(c, values);
-            if (!newconditions.contains(c)) {
+        	if (c.getValue("amt") != null) { // we need to increment the current value of a resource in the state list
+        		for (Condition con : newconditions) {
+        			if (con.getName().equalsIgnoreCase("Has") && con.getValue("type").getValue() == c.getValue("type").getValue()) {
+        				Condition newCondition = new Condition(con, c.getVariables());
+        				newconditions.remove(con);
+        				newconditions.add(newCondition);
+        				//con.getValue("amt").updateValue(c.getValue("amt"));
+        				break;
+        			}
+        		}
+        	} else if (!newconditions.contains(c)) {
             	newconditions.add(c);
             }
         }
