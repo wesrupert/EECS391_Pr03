@@ -116,7 +116,7 @@ class PossibleConditions {
         }
         vars.add("from");
         vars.add("to");
-		return new PlanAction("Move", vars, preconditions, add, delete);
+		return new PlanAction("Move" + numpeas, vars, preconditions, add, delete);
 	}
 
     // Harvest(id, pos, type):
@@ -191,7 +191,7 @@ class PossibleConditions {
             vars.add(idnames[i]);
         }
         vars.add("type");
-		return new PlanAction("Deposit", vars, preconditions, add, delete);
+		return new PlanAction("Deposit" + numpeas, vars, preconditions, add, delete);
 	}
 
     public static PlanAction getBuildPeasantAction() {
@@ -203,7 +203,7 @@ class PossibleConditions {
         add.add(new Condition("Has", new Value[] { new Value(Condition.GOLD), new Value("amt", 400, Value.Type.REMOVE) }));
         add.add(new Condition("Exists", new Value[] { new Value("amt", 1, Value.Type.ADD) }));
         
-        // Deposit action is Deposit(id, type)
+        // BuildPeasant action is BuildPeasant()
         return new PlanAction("BuildPeasant", new ArrayList<String>(), preconditions, add, delete);
     }
 }
