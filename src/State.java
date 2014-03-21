@@ -162,6 +162,11 @@ public class State implements Comparable<State> {
 		// Add condition Contains(Forest, wood)
 		conditions.add(new Condition(Condition.CONTAINS, Arrays.asList(
 				new Value[]{new Value(Condition.FOREST), new Value(Condition.WOOD)})));
+		
+		// Add condition Hall(Townhall)
+				conditions.add(new Condition(Condition.HALL, Arrays.asList(
+						new Value[]{new Value(Condition.TOWNHALL)})));
+				
 		State newState = new State(conditions);
 		newState.GoldValue = 0;
 		newState.WoodValue = 0;

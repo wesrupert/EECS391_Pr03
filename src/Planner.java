@@ -19,7 +19,7 @@ public class Planner {
 		plan.add(startState);
 		
 		for (Condition goalCondition : goalState.getState()) {
-			//TODO solve goal conditions one at a time
+			//TODO set static gold/wood goal in State to use in heuristic
 			List<State> goalPath = getPathToGoal(goalCondition, plan.get(plan.size() - 1));
 			plan.addAll(goalPath);
 		}
@@ -74,7 +74,7 @@ public class Planner {
         for (Value variable : variables) {
         	List<Value> addList = null;
         	if (variable.getName().equalsIgnoreCase("first")
-        			|| variable.getName().equalsIgnoreCase("scond")
+        			|| variable.getName().equalsIgnoreCase("second")
         			|| variable.getName().equalsIgnoreCase("third")) {
         		addList = units;
         	} else if (variable.getName().equalsIgnoreCase("pos")

@@ -7,6 +7,7 @@ public class Condition {
     public static final Condition AT       = new Condition("At",       new Value[] { new Value("first"), new Value("pos") });
     public static final Condition HAS      = new Condition("Has",      new Value[] { new Value("type"), new Value("amt", 0, Value.Type.ADD) });
     public static final Condition CONTAINS = new Condition("Contains", new Value[] { new Value("pos"), new Value("type") });
+    public static final Condition HALL    = new Condition("Hall",      new Value[] { new Value("pos") });
     
     public static final Value NOTHING  = new Value("type", 10, Value.Type.CONSTANT);
     public static final Value GOLD     = new Value("type", 11, Value.Type.CONSTANT);
