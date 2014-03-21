@@ -22,7 +22,6 @@
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,8 +66,8 @@ public class PlannerAgent extends Agent {
 		}
 		
         List<PlanAction> actions = PlanAction.getActions(scenario);
-        State startState = getStartState(peasantIds.get(0));
-        State goalState = getGoalState();
+        State startState = State.getStartState(peasantIds.get(0));
+        State goalState = State.getGoalState(scenario);
         
         Planner planner = new Planner(actions, startState, goalState);
         plan = planner.createPlan();
@@ -76,66 +75,6 @@ public class PlannerAgent extends Agent {
         return middleStep(newstate, statehistory);
     }
 	
-	//TODO fix this after the refactor
-	private State getStartState(int peasantId) {
-		List<Condition> conditions = new ArrayList<>();
-		
-		// Add condition Holding(Peasant1, Nothing)
-		conditions.add(new Condition(Condition.HOLDING, Arrays.asList(
-				new Value[]{new Value("id", peasantId), new Value(Condition.NOTHING)})));
-		
-		// Add condition At(peasent1, Townhall)
-		conditions.add(new Condition(Condition.AT, Arrays.asList(
-				new Value[]{new Value("id", peasantId), new Value(Condition.TOWNHALL)})));
-		
-		// Add condition Has(wood, 0)
-		conditions.add(new Condition(Condition.HAS, Arrays.asList(
-				new Value[]{new Value(Condition.WOOD), new Value("amt", Value.Type.ADD)})));
-		
-		// Add condition Has(gold, 0)
-		conditions.add(new Condition(Condition.HAS, Arrays.asList(
-				new Value[]{new Value(Condition.GOLD), new Value("amt", Value.Type.ADD)})));
-		
-		// Add condition Contains(Goldmine, gold)
-		conditions.add(new Condition(Condition.CONTAINS, Arrays.asList(
-				new Value[]{new Value(Condition.GOLDMINE), new Value(Condition.GOLD)})));
-		
-		// Add condition Contains(Forest, wood)
-		conditions.add(new Condition(Condition.CONTAINS, Arrays.asList(
-				new Value[]{new Value(Condition.FOREST), new Value(Condition.WOOD)})));
-		
-		return new State(conditions);
-	}
-	
-	private State getGoalState() {
-		List<Condition> conditions = new ArrayList<>();
-		
-		int wood = 0;
-		int gold = 0;
-		switch (scenario) {
-		case 1:
-			wood = 200;
-			gold = 200;
-		case 2:
-		case 3:
-			wood = 1000;
-			gold = 1000;
-		case 4:
-			wood = 2000;
-			gold = 3000;
-		}
-		
-		// Add condition Has(Wood, AMT)
-		conditions.add(new Condition(Condition.HAS, Arrays.asList(
-				new Value[]{new Value(Condition.WOOD), new Value("amt", wood)})));
-		
-		// Add condition Has(Gold, AMT)
-		conditions.add(new Condition(Condition.HAS, Arrays.asList(
-				new Value[]{new Value(Condition.GOLD), new Value("amt", gold)})));
-		
-		return new State(conditions);
-	}
-
 	@Override
     public Map<Integer, edu.cwru.sepia.action.Action> middleStep(StateView newState, History.HistoryView statehistory) {
         step++;

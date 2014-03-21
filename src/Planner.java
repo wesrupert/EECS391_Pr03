@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -8,36 +9,89 @@ public class Planner {
 	private State goalState;
 	
 	public Planner(List<PlanAction> availableActions, State startState, State goalState) {
-		this.availableActions = new ArrayList<>();
-		this.availableActions.addAll(availableActions);
-		
+		this.availableActions = new ArrayList<>(availableActions);
 		this.startState = startState;
-		
 		this.goalState = goalState;
 	}
 	
-	// TODO
 	public List<State> createPlan() {
+		List<State> plan = new LinkedList<>();
+		plan.add(startState);
+		
 		for (Condition goalCondition : goalState.getState()) {
 			//TODO solve goal conditions one at a time
-			
+			List<State> goalPath = getPathToGoal(goalCondition, plan);
+			plan.addAll(goalPath);
 		}
 		
+		return plan;
+	}
+
+	private List<State> getPathToGoal(Condition goalCondition, List<State> currentPlan) {
+		State currentState = currentPlan.get(currentPlan.size() - 1);
+		List<PlanAction> possibleActions = generatePossibleActions(currentState);
 		return null;
 	}
 	
-//    public List<PlanAction> generatePossibleActions() {
-//        List<String> variables = new ArrayList<>();
-//        for (Condition condition : state) {
-//            variables.addAll(condition.getVariables().keySet());
-//        }
-//        
-//        for (PlanAction action : actions) {
-//            //TODO plug variables into actions, see if they are valid
-//            
-//        }
-//        
-//        return null;
+    public List<PlanAction> generatePossibleActions(State state) {
+        List<Value> variables = new ArrayList<>();
+        for (Condition condition : state.getState()) {
+            variables.addAll(condition.getVariables());
+        }
+        
+        List<Value> units = new ArrayList<>();
+        List<Value> positions = new ArrayList<>();
+        List<Value> types = new ArrayList<>();
+        
+        outer:
+        for (Value variable : variables) {
+        	List<Value> addList = null;
+        	if (variable.getName().equalsIgnoreCase("id")) {
+        		addList = units;
+        	} else if (variable.getName().equalsIgnoreCase("pos")) {
+        		addList = positions;
+        	} else if (variable.getName().equalsIgnoreCase("type")) {
+        		addList = types;
+        	} else if (variable.getName().equalsIgnoreCase("amt")) {
+        		continue;
+        	}
+        	
+        	if (addList == null) {
+        		System.out.println("Unrecognized variable name!!!" + variable.getName());
+        		continue;
+        	}
+        	
+        	for (Value var : addList) {
+        		if (variable.getName().equals(var.getName()) && variable.equals(var)) {
+        			continue outer;
+        		}
+        	}
+        	addList.add(variable);
+        }
+
+        List<PlanAction> validActions = new ArrayList<>();
+        for (PlanAction actionTemplate : availableActions) {
+            List<PlanAction> possibleActions = actionTemplate.getPossibleActions(units, positions, types);
+            for (PlanAction action : possibleActions) {
+            	if (action.isApplicableTo(state)) {
+            		validActions.add(action);
+            	}
+            }
+        }
+        
+        return validActions;
+    }
+    
+//    private List<Pair<PlanAction, List<Value>>> getActions(State state, PossibleConditions p) {
+//    	List<Pair<PlanAction, List<Value>>> actions = new ArrayList<>();
+//    	for (List<Value> varset : p.getStates()) {
+//    		for (PlanAction action : availableActions) {
+//    			if (action.isApplicableTo(state, varset)) {
+//    				actions.add(new Pair(action, varset));
+//    			}
+//    		}
+//    	}
+//    	return actions;
 //    }
 
 }

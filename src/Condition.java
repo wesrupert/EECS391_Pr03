@@ -8,12 +8,12 @@ public class Condition {
     public static final Condition HAS      = new Condition("Has",      new Value[] { new Value("type"), new Value("amt", Value.Type.ADD) });
     public static final Condition CONTAINS = new Condition("Contains", new Value[] { new Value("pos"), new Value("type") });
     
-    public static final Value NOTHING  = new Value("type", 1, Value.Type.CONSTANT);
-    public static final Value GOLD     = new Value("type", 2, Value.Type.CONSTANT);
-    public static final Value WOOD     = new Value("type", 3, Value.Type.CONSTANT);
-    public static final Value TOWNHALL = new Value("pos",  4, Value.Type.CONSTANT);
-    public static final Value GOLDMINE = new Value("pos",  5, Value.Type.CONSTANT);
-    public static final Value FOREST   = new Value("pos",  6, Value.Type.CONSTANT);
+    public static final Value NOTHING  = new Value("type", 10, Value.Type.CONSTANT);
+    public static final Value GOLD     = new Value("type", 11, Value.Type.CONSTANT);
+    public static final Value WOOD     = new Value("type", 12, Value.Type.CONSTANT);
+    public static final Value TOWNHALL = new Value("pos",  13, Value.Type.CONSTANT);
+    public static final Value GOLDMINE = new Value("pos",  14, Value.Type.CONSTANT);
+    public static final Value FOREST   = new Value("pos",  15, Value.Type.CONSTANT);
     
     private String name;
     private List<Value> variables;
@@ -28,7 +28,7 @@ public class Condition {
 
     public Condition(Condition other, List<Value> values) {
         this.name = other.name;
-        this.variables = new ArrayList<>(other.variables);
+        this.variables = new ArrayList<>(/*other.variables*/);
         for (int i = 0; i < other.variables.size(); i++) {
             Value value = new Value(other.variables.get(i));
             for (Value val : values) {
