@@ -203,4 +203,42 @@ public class PlanAction {
 		
 		return possibleActions;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+    		return false;
+    	}
+    	if (o == this) {
+    		return true;
+    	}
+    	if (!(o instanceof PlanAction)) {
+    		return false;
+    	}
+    	PlanAction action = (PlanAction) o;
+    	
+    	if (!action.getName().equals(name) || action.isAppliedAction() != isAppliedAction || action.getVariables().size() != variables.size()) {
+    		return false;
+    	}
+    	
+    	if (isAppliedAction) {
+    		if (action.getConstants().size() != constants.size()) {
+    			return false;
+    		}
+    		
+    		for (int i = 0; i < constants.size(); i++) {
+    			if (!constants.get(i).equals(action.getConstants().get(i))) {
+    				return false;
+    			}
+    		}
+    	} else {
+    		for (int i = 0; i < variables.size(); i++) {
+    			if (!constants.get(i).equals(action.getVariables().get(i))) {
+    				return false;
+    			}
+    		}
+    	}
+    	
+    	return true;
+	}
 }

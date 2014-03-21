@@ -74,11 +74,11 @@ public class State implements Comparable<State> {
 		
 		// Add condition Holding(Peasant1, Nothing)
 		conditions.add(new Condition(Condition.HOLDING, Arrays.asList(
-				new Value[]{new Value("id", peasantId), new Value(Condition.NOTHING)})));
+				new Value[]{new Value("first", peasantId), new Value(Condition.NOTHING)})));
 		
 		// Add condition At(peasent1, Townhall)
 		conditions.add(new Condition(Condition.AT, Arrays.asList(
-				new Value[]{new Value("id", peasantId), new Value(Condition.TOWNHALL)})));
+				new Value[]{new Value("first", peasantId), new Value(Condition.TOWNHALL)})));
 		
 		// Add condition Has(wood, 0)
 		conditions.add(new Condition(Condition.HAS, Arrays.asList(

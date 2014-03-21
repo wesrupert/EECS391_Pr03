@@ -3,8 +3,8 @@ import java.util.List;
 import java.util.Set;
 
 public class Condition {
-    public static final Condition HOLDING  = new Condition("Holding",  new Value[] { new Value("id"), new Value("type") });
-    public static final Condition AT       = new Condition("At",       new Value[] { new Value("id"), new Value("pos") });
+    public static final Condition HOLDING  = new Condition("Holding",  new Value[] { new Value("first"), new Value("type") });
+    public static final Condition AT       = new Condition("At",       new Value[] { new Value("first"), new Value("pos") });
     public static final Condition HAS      = new Condition("Has",      new Value[] { new Value("type"), new Value("amt", Value.Type.ADD) });
     public static final Condition CONTAINS = new Condition("Contains", new Value[] { new Value("pos"), new Value("type") });
     
@@ -33,7 +33,7 @@ public class Condition {
             Value value = new Value(other.variables.get(i));
             for (Value val : values) {
                 if (value.getName().equals(val.getName())) {
-                    value.updateValue(val.getValue());
+                    value.updateValue(val);
                     break;
                 }
             }

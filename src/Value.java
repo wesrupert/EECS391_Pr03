@@ -53,13 +53,14 @@ class Value {
         switch (value.type) {
             case ADD:
                 this.value += value.value;
-                return value;
+                return this.value;
             case REMOVE:
                 this.value -= value.value;
-                return value;
+                return this.value;
             case EQUALS:
+            case CONSTANT:
                 this.value = value.value;
-                return value;
+                return this.value;
             default:
                 return -1;
         }
