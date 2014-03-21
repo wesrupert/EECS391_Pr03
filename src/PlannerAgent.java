@@ -121,17 +121,14 @@ public class PlannerAgent extends Agent {
 			location = action.getConstants().get(2).getValue();
 			peasant = newState.getUnit(peasantId);
 			resource = findClosestResource(peasant, location, newState);
-			System.out.println("Move to loc: " + location);
 			if (resource != null) {
-				if (isAdjacent(peasant, resource)) { // If we have reached the destination, do the next action
-					System.out.println("REACHED RESOURCE DESTINATION!");
+				if (isAdjacent(peasant, resource)) { // If we have reached the destination, do the next action in the list
 					curState++;
 				}
 				b = new LocatedAction(peasantId, ActionType.COMPOUNDMOVE, resource.getXPosition(), resource.getYPosition());
 				builder.put(peasantId, b);
 			} else {
-				if (isAdjacent(peasant, townhalls.get(0))) { // If we have reached the destination, do the next action
-					System.out.println("REACHED TOWNHALL DESTINATION!");
+				if (isAdjacent(peasant, townhalls.get(0))) { // If we have reached the destination, do the next action in the list
 					curState++;
 				}
 				b = new LocatedAction(peasantId, ActionType.COMPOUNDMOVE, townhalls.get(0).getXPosition(), townhalls.get(0).getYPosition());
@@ -192,10 +189,8 @@ public class PlannerAgent extends Agent {
 			return null;
 		} else if (location == Condition.GOLDMINE.getValue()) {
 			resources = currentState.getResourceNodes(Type.GOLD_MINE);
-			System.out.println("finding closest goldmine, size " + resources.size());
 		} else if (location == Condition.FOREST.getValue()) {
 			resources = currentState.getResourceNodes(Type.TREE);
-			System.out.println("finding closest forest, size " + resources.size());
 		} else {
 			System.out.println("Something went wrong when finding closest resource!");
 			System.out.println("\tPeasant: " + peasant.getID() + ", location: " + location);
@@ -219,6 +214,7 @@ public class PlannerAgent extends Agent {
 	@Override
     public void terminalStep(StateView newstate, History.HistoryView statehistory) {
         step++;
+        System.out.println("TOTAL STEPS TAKEN: " + step);
     }
 
     public static String getUsage() {
