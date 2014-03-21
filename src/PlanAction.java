@@ -73,6 +73,9 @@ public class PlanAction {
 		int numPeasants = state.getNumPeasants();
 		if (this.name.equalsIgnoreCase("BuildPeasant")) {
 			numPeasants++;
+			if (numPeasants == 4) {
+				System.out.println("AHHHH");
+			}
 		}
 		
 		// Add the new state conditions.
@@ -148,7 +151,7 @@ public class PlanAction {
 		if (!name.startsWith("BuildPeasant")) {
 			return false;
 		}
-		return state.getNumPeasants() > 3;
+		return state.getNumPeasants() >= 3;
 	}
 
 	private boolean badMove(State state) {
