@@ -74,6 +74,9 @@ public class Planner {
         
         outer:
         for (Value variable : variables) {
+        	if (variable == null || variable.getName().isEmpty()) {
+        		continue;
+        	}
         	List<Value> addList = null;
         	if (variable.getName().equalsIgnoreCase("first")
         			|| variable.getName().equalsIgnoreCase("second")

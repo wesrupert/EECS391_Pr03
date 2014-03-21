@@ -71,7 +71,7 @@ public class State implements Comparable<State> {
     }
 
     private int heuristicWeight() {
-    	return numPeasants() * -10000
+    	return Math.min(numPeasants(), 3) * -450
     		+ this.getHeuristicWeight(true)
     		+ this.getHeuristicWeight(false)
     		+ depth * 50;
