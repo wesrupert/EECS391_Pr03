@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 import edu.cwru.sepia.action.Action;
+import edu.cwru.sepia.action.ActionType;
+import edu.cwru.sepia.action.LocatedAction;
+import edu.cwru.sepia.action.TargetedAction;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.environment.model.history.History;
 import edu.cwru.sepia.environment.model.state.State.StateView;
@@ -83,6 +86,8 @@ public class PlannerAgent extends Agent {
         List<Integer> allUnitIds = newState.getAllUnitIds();
 		List<Integer> peasantIds = new ArrayList<Integer>();
 		List<Integer> townhallIds = new ArrayList<Integer>();
+		List<Integer> goldmineIds = new ArrayList<Integer>();
+		List<Integer> forestIds = new ArrayList<Integer>();
 		for(int i=0; i<allUnitIds.size(); i++) {
 			int id = allUnitIds.get(i);
 			UnitView unit = newState.getUnit(id);
@@ -91,14 +96,30 @@ public class PlannerAgent extends Agent {
 				townhallIds.add(id);
 			if(unitTypeName.equals("Peasant"))
 				peasantIds.add(id);
+			if(unitTypeName.equals("Goldmine"))
+				peasantIds.add(id);
+			if(unitTypeName.equals("Forest"))
+				peasantIds.add(id);
 		}
 		
 		Action b = null;
-		State action = plan.remove(0);
-//		
-//		if (name.equalsIgnoreCase("Move")) {
-//			action.
-//		}
+		State state = plan.remove(0);
+		
+		// TODO make sure that the state list doesn't contain the first state
+		PlanAction action = state.getFromParent();
+		switch (action.getName()) {
+		case "Move":
+			//Move from peasent id to location
+			int peasantId = action.getConstants().get(0).getValue();
+			UnitView peasent = newState.getUnit(peasantId);
+			int[] coords = findClosest();
+			b = new LocatedAction(peasantId, ActionType.COMPOUNDMOVE, x, y)
+			break;
+		case "Harvest":
+			break;
+		case "Deposit":
+			break;
+		}
 //		b = new TargetedAction(peasantId, ActionType.COMPOUNDDEPOSIT, townhallId);
 //		
 //		List<Integer> resourceIds = currentState.getResourceNodeIds(Type.TREE);

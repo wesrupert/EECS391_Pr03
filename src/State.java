@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class State implements Comparable {
+public class State implements Comparable<State> {
     public static int GoldValue;
     public static int WoodValue;
 
@@ -65,6 +65,9 @@ public class State implements Comparable {
         return weight;
     }
     
+    public boolean isGoalState(Condition goal) {
+    	return state.contains(goal);
+    }
 
 	public static State getStartState(int peasantId) {
 		List<Condition> conditions = new ArrayList<>();
