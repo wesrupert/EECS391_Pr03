@@ -204,7 +204,12 @@ public class State implements Comparable<State> {
 	}
 
 	@Override
-	 public int compareTo(State other) {
+	public int compareTo(State other) {
 	 	return this.getHeuristicWeight() - other.getHeuristicWeight();
-	 }
+	}
+
+	@Override
+	public String toString() {
+		return "State depth " + depth + ", from " + fromParent + ", weight " + getHeuristicWeight();
+	}
 }
