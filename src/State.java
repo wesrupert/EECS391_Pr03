@@ -8,6 +8,8 @@ public class State implements Comparable<State> {
 
     private State parent;
     private int depth;
+    private int weight;
+    private boolean weightSet;
     private PlanAction fromParent;
     private List<Value> valuesFromParent;
     private List<Condition> state;
@@ -15,6 +17,7 @@ public class State implements Comparable<State> {
     public State(List<Condition> initialState) {
         this.parent = null;
         this.depth = 0;
+        this.weightSet = false;
         this.fromParent = null;
         this.valuesFromParent = null;
         this.state = initialState;
@@ -45,16 +48,23 @@ public class State implements Comparable<State> {
     }
 
     public int getHeuristicWeight() {
+    	if (!weightSet) {
+    		weight = heuristicWeight();
+    		weightSet = true;
+    	}
+    	return weight;
+    }
+
+    private int heuristicWeight() {
     	return 2 * -400 // TODO: Change the 2 to a peasant count
     		+ this.getHeuristicWeight(true)
     		+ this.getHeuristicWeight(false)
-    		+ depth * 100;
+    		+ depth * 50;
     }
 
     private int getHeuristicWeight(boolean isGold) {
         int weight = isGold ? GoldValue : WoodValue;
         Value type = isGold ? Condition.GOLD : Condition.WOOD;
-        int id = isGold ? 14 : 15;
 
         for (Condition c : state) {
             if (c.getValue("type").equals(type)) {
@@ -71,11 +81,15 @@ public class State implements Comparable<State> {
 
         // Get weight determined by proximity.
         int numAt = 0;
-        for (Condition c : state) {
-        	if (c.getName().equals("At") &&
-        		c.getValue("pos") != null &&
-        		c.getValue("pos").getValue() == id) {
-        		numAt++;
+        for (int i = 0; i < 3; i++) {
+        	if (isHolding(i, isGold)) {
+        		if (isAtTH(i)) {
+        			numAt++;
+        		}
+        	} else {
+        		if (isAt(i, isGold)) {
+        			numAt++;
+        		}
         	}
         }
         weight += (weight / 100) * numAt;
@@ -83,6 +97,41 @@ public class State implements Comparable<State> {
         return weight;
     }
     
+    private boolean isHolding(int id, boolean isGold) {
+    	int type = isGold ? 11 : 12;
+    	for (Condition c : state) {
+    		if (c.getName().equals("Holding") &&
+    			c.getValue("first").getValue() == id &&
+    			c.getValue("type").getValue() == type) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+
+    private boolean isAt(int id, boolean isGold) {
+        int type = isGold ? 14 : 15;
+        for (Condition c : state) {
+        	if (c.getName().equals("At") &&
+        		c.getValue("first").getValue() == id &&
+        		c.getValue("pos").getValue() == type) {
+        		return true;
+        	}
+        }
+        return false;
+    }
+
+    private boolean isAtTH(int id) {
+        for (Condition c : state) {
+        	if (c.getName().equals("At") &&
+        		c.getValue("first").getValue() == id &&
+        		c.getValue("pos").getValue() == 13) {
+        		return true;
+        	}
+        }
+        return false;
+    }
+
     public boolean isGoalState(Condition goal) {
     	return state.contains(goal);
     }
