@@ -5,6 +5,7 @@ import java.util.List;
 public class State implements Comparable<State> {
     public static int GoldValue;
     public static int WoodValue;
+    public static boolean isGold;
 
     private State parent;
     private int depth;
@@ -63,8 +64,8 @@ public class State implements Comparable<State> {
     }
 
     private int getHeuristicWeight(boolean isGold) {
-        int weight = isGold ? GoldValue : WoodValue;
-        Value type = isGold ? Condition.GOLD : Condition.WOOD;
+        int weight = this.isGold ? GoldValue : WoodValue;
+        Value type = this.isGold ? Condition.GOLD : Condition.WOOD;
 
         for (Condition c : state) {
             if (c.getName().equals("Has") && c.getValue("type").equals(type)) {
@@ -82,12 +83,12 @@ public class State implements Comparable<State> {
         // Get weight determined by proximity.
         int numAt = 0;
         for (int i = 0; i < 3; i++) {
-        	if (isHolding(i, isGold)) {
+        	if (isHolding(i, this.isGold)) {
         		if (isAtTH(i)) {
         			numAt++;
         		}
         	} else {
-        		if (isAt(i, isGold)) {
+        		if (isAt(i, this.isGold)) {
         			numAt++;
         		}
         	}
@@ -194,13 +195,13 @@ public class State implements Comparable<State> {
 			break;
 		}
 		
-		// Add condition Has(Wood, AMT)
-		conditions.add(new Condition(Condition.HAS, Arrays.asList(
-				new Value[]{new Value(Condition.WOOD), new Value("amt", wood)})));
-		
 		// Add condition Has(Gold, AMT)
 		conditions.add(new Condition(Condition.HAS, Arrays.asList(
 				new Value[]{new Value(Condition.GOLD), new Value("amt", gold)})));
+		
+		// Add condition Has(Wood, AMT)
+		conditions.add(new Condition(Condition.HAS, Arrays.asList(
+				new Value[]{new Value(Condition.WOOD), new Value("amt", wood)})));
 		
 		State newState = new State(conditions);
 		newState.GoldValue = gold;

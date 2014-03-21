@@ -79,7 +79,7 @@ public class Condition {
 
     public Value getValue(String key) {
         for (Value v : variables) {
-            if (v.getName().equals(key)) {
+            if (v.getName().equalsIgnoreCase(key)) {
                 return v;
             }
         }
