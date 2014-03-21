@@ -50,7 +50,7 @@ public class State implements Comparable<State> {
         Value type = isGold ? Condition.GOLD : Condition.WOOD;
 
         for (Condition c : state) {
-            if (c.getValue("type").equals(type)) {
+            if (c.getName().equals("Has") && c.getValue("type").equals(type)) {
                 // Find how much gold we have.
                 if (c.getName().equals("Has")) {
                     weight -= c.getValue("amt").getValue();
@@ -95,8 +95,10 @@ public class State implements Comparable<State> {
 		// Add condition Contains(Forest, wood)
 		conditions.add(new Condition(Condition.CONTAINS, Arrays.asList(
 				new Value[]{new Value(Condition.FOREST), new Value(Condition.WOOD)})));
-		
-		return new State(conditions);
+		State newState = new State(conditions);
+		newState.GoldValue = 0;
+		newState.WoodValue = 0;
+		return newState;
 	}
 	
 	public static State getGoalState(int scenario) {
@@ -128,7 +130,10 @@ public class State implements Comparable<State> {
 		conditions.add(new Condition(Condition.HAS, Arrays.asList(
 				new Value[]{new Value(Condition.GOLD), new Value("amt", gold)})));
 		
-		return new State(conditions);
+		State newState = new State(conditions);
+		newState.GoldValue = gold;
+		newState.WoodValue = wood;
+		return newState;
 	}
 
 	 public int compareTo(State other) {

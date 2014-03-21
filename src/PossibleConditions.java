@@ -1,9 +1,8 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 class PossibleConditions {
-    private static final String[] idnames { "first", "second", "third" };
+    private static final String[] idnames = { "first", "second", "third" };
     private int[] ids, locations, types;
     private List<Condition> holding, at, contains;
     private List<List<Value>> states;

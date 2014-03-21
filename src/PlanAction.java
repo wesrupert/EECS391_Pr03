@@ -153,7 +153,7 @@ public class PlanAction {
 		List<Value[]> variableCombos = new ArrayList<>();
 		
 		switch (name) {
-		case "Move":
+		case "Move1":
 			for (Value unit : units) {
 				for (Value position1 : positions) {
 					for (Value position2 : positions) {
@@ -165,7 +165,7 @@ public class PlanAction {
 				}
 			}
 			break;
-		case "Harvest":
+		case "Harvest1":
 			for (Value unit : units) {
 				for (Value position : positions) {
 					for (Value type : types) {
@@ -174,7 +174,7 @@ public class PlanAction {
 				}
 			}
 			break;
-		case "Deposit":
+		case "Deposit1":
 			for (Value unit : units) {
 				for (Value type : types) {
 					if (type.equals(Condition.NOTHING)) {
