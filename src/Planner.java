@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.List;
 
 
@@ -28,13 +30,23 @@ public class Planner {
 	}
 
 	private List<State> getPathToGoal(Condition goalCondition, State currentState) {
-		boolean foundGoal = false;
-		while (!foundGoal) {
-			getNextStates(currentState);
+        // Find a goal state.
+        SortedSet<State> states = new TreeSet<>();
+        states.add(currentState);
+        State current = states.first();
+		while (!current.isGoalState()) {
+            states.addAll(getNextStates(current));
+            current = states.first();
 		}
-		
-		
-		return null;
+
+        // Generate the list from the found state.
+        List<State> path = new ArrayList<>();
+        while (current.getParent() != null) {
+            path.add(0, current);
+            current = current.getParent();
+        }
+
+        return path;
 	}
 	
 	private List<State> getNextStates(State currentState) {
