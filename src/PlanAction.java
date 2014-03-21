@@ -94,14 +94,25 @@ public class PlanAction {
     		return false;
     	}
         for (Condition c : preconditions) {
-            if (!state.getState().contains(c)) {
+            if (!state.getState().contains(c) || badMove(state)) {
                 return false;
             }
         }
         return true;
     }
 
-    public String getName() {
+    private boolean badMove(State state) {
+    	if (!name.startsWith("Move")) {
+    		return false;
+    	}
+    	if (constants.get(1).getValue() == Condition.FOREST.getValue() && constants.get(2).getValue() == Condition.GOLDMINE.getValue()
+    			|| constants.get(1).getValue() == Condition.GOLDMINE.getValue() && constants.get(2).getValue() == Condition.FOREST.getValue()) {
+    		return true;
+    	}
+		return false;
+	}
+
+	public String getName() {
         return this.name;
     }
     
