@@ -215,6 +215,6 @@ public class State implements Comparable<State> {
 
 	@Override
 	public String toString() {
-		return "State depth " + depth + ", from " + fromParent + ", weight " + getHeuristicWeight();
+		return "State depth " + depth + ", from " + fromParent + ", weight " + getHeuristicWeight() + "\n" + valuesFromParent.toString();
 	}
 }
