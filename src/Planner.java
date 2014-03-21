@@ -20,15 +20,14 @@ public class Planner {
 		
 		for (Condition goalCondition : goalState.getState()) {
 			//TODO solve goal conditions one at a time
-			List<State> goalPath = getPathToGoal(goalCondition, plan);
+			List<State> goalPath = getPathToGoal(goalCondition, plan.get(plan.size() - 1));
 			plan.addAll(goalPath);
 		}
 		
 		return plan;
 	}
 
-	private List<State> getPathToGoal(Condition goalCondition, List<State> currentPlan) {
-		State currentState = currentPlan.get(currentPlan.size() - 1);
+	private List<State> getPathToGoal(Condition goalCondition, State currentState) {
 		boolean foundGoal = false;
 		while (!foundGoal) {
 			getNextStates(currentState);
