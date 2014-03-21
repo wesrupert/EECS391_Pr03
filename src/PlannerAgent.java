@@ -48,6 +48,7 @@ public class PlannerAgent extends Agent {
     private int step;
     private int scenario;
     List<State> plan;
+    int curState = 0;
 
     public PlannerAgent(int playernum, String[] arguments) {
         super(playernum);
@@ -101,68 +102,111 @@ public class PlannerAgent extends Agent {
 		}
 		
 		Action b = null;
-		State state = plan.remove(0);
 		
-		// TODO make sure that the state list doesn't contain the first state
+		State state = plan.get(curState);
+		
+		System.out.println("Executing Action:");
+		printStateAction(state);
+		
 		PlanAction action = state.getFromParent();
 		int peasantId = 0;
 		int location = 0;
 		UnitView peasant = null;
 		ResourceView resource = null;
 		switch (action.getName()) {
-		case "Move":
-			//Move from peasent id to location
+		case "Move1":
+			// Move from peasant id to location
+			System.out.println("Moving!");
 			peasantId = action.getConstants().get(0).getValue();
 			location = action.getConstants().get(2).getValue();
 			peasant = newState.getUnit(peasantId);
-			resource = findClosest(peasant, location, newState);
+			resource = findClosestResource(peasant, location, newState);
+			System.out.println("Move to loc: " + location);
 			if (resource != null) {
+				if (isAdjacent(peasant, resource)) { // If we have reached the destination, do the next action
+					System.out.println("REACHED RESOURCE DESTINATION!");
+					curState++;
+				}
 				b = new LocatedAction(peasantId, ActionType.COMPOUNDMOVE, resource.getXPosition(), resource.getYPosition());
 				builder.put(peasantId, b);
 			} else {
+				if (isAdjacent(peasant, townhalls.get(0))) { // If we have reached the destination, do the next action
+					System.out.println("REACHED TOWNHALL DESTINATION!");
+					curState++;
+				}
 				b = new LocatedAction(peasantId, ActionType.COMPOUNDMOVE, townhalls.get(0).getXPosition(), townhalls.get(0).getYPosition());
 				builder.put(peasantId, b);
 			}
 			break;
-		case "Harvest":
+		case "Harvest1":
+			// Harvest the adjacent resource (peasant should be standing next to it)
+			System.out.println("Harvesting!");
 			peasantId = action.getConstants().get(0).getValue();
 			location = action.getConstants().get(1).getValue();
 			peasant = newState.getUnit(peasantId);
-			resource = findClosest(peasant, location, newState);
+			resource = findClosestResource(peasant, location, newState);
 			if (resource == null) {
 				System.out.println("Issue with finding closest resource");
 			}
 			b = new TargetedAction(peasantId, ActionType.COMPOUNDGATHER, resource.getID());
 			builder.put(peasantId, b);
+			curState++;
 			break;
-		case "Deposit":
+		case "Deposit1":
+			// Deposit the held resource (peasant should be next to the town hall already)
+			System.out.println("Depositing!");
 			peasantId = action.getConstants().get(0).getValue();
 			b = new TargetedAction(peasantId, ActionType.COMPOUNDDEPOSIT, townhalls.get(0).getID());
 			builder.put(peasantId, b);
+			curState++;
 			break;
 		}
 
         return builder;
     }
+	
+	private boolean isAdjacent(UnitView peasant, UnitView unitView) {
+		return (Math.abs(peasant.getXPosition() - unitView.getXPosition()) <= 2
+				&& Math.abs(peasant.getYPosition() - unitView.getYPosition()) <= 2);
+	}
 
-    private ResourceView findClosest(UnitView peasant, int location, StateView currentState) {
+	private boolean isAdjacent(UnitView peasant, ResourceView resource) {
+		return (Math.abs(peasant.getXPosition() - resource.getXPosition()) <= 2
+				&& Math.abs(peasant.getYPosition() - resource.getYPosition()) <= 2);
+	}
+
+	private void printStateAction(State state) {
+		System.out.print(state.getFromParent().getName() + " (");
+		for (Value val : state.getFromParent().getConstants()) {
+			System.out.print(val.getConstantAsString());
+			if (state.getFromParent().getConstants().indexOf(val) != state.getFromParent().getConstants().size() - 1) {
+				System.out.print(", ");
+			}
+		}
+		System.out.println(")");
+	}
+
+    private ResourceView findClosestResource(UnitView peasant, int location, StateView currentState) {
     	List<ResourceView> resources = null;
 		if (location == Condition.TOWNHALL.getValue()) {
 			return null;
 		} else if (location == Condition.GOLDMINE.getValue()) {
 			resources = currentState.getResourceNodes(Type.GOLD_MINE);
+			System.out.println("finding closest goldmine, size " + resources.size());
 		} else if (location == Condition.FOREST.getValue()) {
 			resources = currentState.getResourceNodes(Type.TREE);
+			System.out.println("finding closest forest, size " + resources.size());
 		} else {
-			System.out.println("Something went wrong when finding closest resource");
+			System.out.println("Something went wrong when finding closest resource!");
+			System.out.println("\tPeasant: " + peasant.getID() + ", location: " + location);
 		}
 		
 		double shortestDist = Double.MAX_VALUE;
 		ResourceView closestResource = null;
 		for (ResourceView resource : resources) {
-			double dist = Math.sqrt(
-					(peasant.getXPosition() * peasant.getXPosition()) - (resource.getXPosition() * resource.getXPosition()) +
-					(peasant.getYPosition() * peasant.getYPosition()) - (resource.getYPosition() * resource.getYPosition()));
+			int deltX = peasant.getXPosition() - resource.getXPosition();
+			int deltY = peasant.getYPosition() - resource.getYPosition();
+			double dist = Math.sqrt((deltX * deltX) + (deltY * deltY));
 			if (dist < shortestDist) {
 				shortestDist = dist;
 				closestResource = resource;
