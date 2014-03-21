@@ -46,16 +46,19 @@ class Value {
         this.value = value;
     }
 
-    public int updateValue(int value) {
-        switch (type) {
+    public int updateValue(Value value) {
+        if (this.type == Type.CONSTANT) {
+            return -1;
+        }
+        switch (value.type) {
             case ADD:
-                this.value += value;
+                this.value += value.value;
                 return value;
             case REMOVE:
-                this.value -= value;
+                this.value -= value.value;
                 return value;
             case EQUALS:
-                this.value = value;
+                this.value = value.value;
                 return value;
             default:
                 return -1;

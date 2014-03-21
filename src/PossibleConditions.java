@@ -193,4 +193,17 @@ class PossibleConditions {
         vars.add("type");
 		return new PlanAction("Deposit", vars, preconditions, add, delete);
 	}
+
+    public static PlanAction getBuildPeasantAction() {
+        List<Condition> preconditions = new ArrayList<>();
+        List<Condition> add = new ArrayList<>();
+        List<Condition> delete = new ArrayList<>();
+
+        preconditions.add(new Condition("Has", new Value[] { new Value(Condition.GOLD), new Value("amt", 400)}));
+        add.add(new Condition("Has", new Value[] { new Value(Condition.GOLD), new Value("amt", 400, Value.Type.REMOVE) }));
+        add.add(new Condition("Exists", new Value[] { new Value("amt", 1, Value.Type.ADD) }));
+        
+        // Deposit action is Deposit(id, type)
+        return new PlanAction("BuildPeasant", new ArrayList<String>(), preconditions, add, delete);
+    }
 }
