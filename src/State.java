@@ -124,4 +124,7 @@ public class State {
 		return new State(conditions);
 	}
 
+	 public int compareTo(State other) {
+	 	return this.getHeuristicWeight() - other.getHeuristicWeight();
+	 }
 }
