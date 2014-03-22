@@ -240,6 +240,28 @@ public class State implements Comparable<State> {
 	public int compareTo(State other) {
 	 	return this.getHeuristicWeight() - other.getHeuristicWeight();
 	}
+	
+	@Override boolean equals(Object other) {
+		if (other == null || !(other instanceof State)) {
+			return false;
+		}
+		State s = (State)other;
+		List<Condition> conds = new ArrayList<>(s.state);
+		for (Condition c : state) {
+			boolean isIn = false;
+			for (Condition o : s.state) {
+				if (c.equals(o)) {
+					isIn = true;
+					conds.remove(o);
+					break;
+				}
+			}
+			if (!isIn) {
+				return false;
+			}
+		}
+		return conds.isEmpty();
+	}
 
 	@Override
 	public String toString() {
