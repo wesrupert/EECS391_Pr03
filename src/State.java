@@ -63,94 +63,32 @@ public class State implements Comparable<State> {
     }
 
     public int getHeuristicWeight() {
-    	if (!weightSet) {
-    		weight = heuristicWeight();
-    		weightSet = true;
-    	}
-    	return weight;
-    }
-
-    private int heuristicWeight() {
-    	return Math.min(numPeasants(), 3) * -450
-    		+ this.getHeuristicWeight(true)
-    		+ this.getHeuristicWeight(false)
-    		+ depth * 50;
-    }
-
-    private int getHeuristicWeight(boolean isGold) {
-        int weight = State.isGold ? GoldValue : WoodValue;
-        Value type = State.isGold ? Condition.GOLD : Condition.WOOD;
-
-        for (Condition c : state) {
-            if (c.getName().equals("Has") && c.getValue("type").equals(type)) {
-                // Find how much gold we have.
-                if (c.getName().equals("Has")) {
-                    weight -= c.getValue("amt").getValue();
-                }
-                // Find how much gold is in transit.
-                if (c.getName().equals("Holding")) {
-                    weight -= 100;
-                }
-            }
+        if (!weightSet) {
+            weight = depth + getHeuristic();
+            weightSet = true;
         }
-
-        // Get weight determined by proximity.
-        int numAt = 0;
-        for (int i = 0; i < 3; i++) {
-        	if (isHolding(i, State.isGold)) {
-        		if (isAtTH(i)) {
-        			numAt++;
-        		}
-        	} else {
-        		if (isAt(i, State.isGold)) {
-        			numAt++;
-        		}
-        	}
-        }
-        weight -= (weight / 10) * numAt;
-
         return weight;
     }
-    
-    private boolean isHolding(int id, boolean isGold) {
-    	int type = isGold ? 11 : 12;
-    	for (Condition c : state) {
-    		if (c.getName().equals("Holding") &&
-    			c.getValue(0).getValue() == id &&
-    			c.getValue(1).getValue() == type) {
-    			return true;
-    		}
-    	}
-    	return false;
-    }
 
-    private boolean isAt(int id, boolean isGold) {
-        int type = isGold ? 14 : 15;
-        for (Condition c : state) {
-        	if (c.getName().equals("At") &&
-        		c.getValue(0).getValue() == id &&
-        		c.getValue(1).getValue() == type) {
-        		return true;
-        	}
-        }
-        return false;
-    }
-
-    private boolean isAtTH(int id) {
-        for (Condition c : state) {
-        	if (c.getName().equals("At") &&
-        		c.getValue(0).getValue() == id &&
-        		c.getValue(1).getValue() == 13) {
-        		return true;
-        	}
-        }
-        return false;
+    public int getHeuristic() {
+        int goal = isGold ? GoldValue : WoodValue;
+        return (goal - getValue()) / (100 * numPeasants());
     }
 
     private int numPeasants() {
         for (Condition c : state) {
             if (c.getName().equals("Numpeas")) {
                 return c.getValue(0).getValue();
+            }
+        }
+        return -1;
+    }
+
+    private int getValue() {
+        int id = isGold ? 11 : 12;
+        for (condition c : state) {
+            if (c.getName().equals("Has") && c.getValue(0).getValue() == id) {
+                return c.getValue(1).getValue();
             }
         }
         return -1;
